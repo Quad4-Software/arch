@@ -1,0 +1,25 @@
+pkgbase = meshchatx
+	pkgdesc = All-in-one Reticulum client (prebuilt AppImage)
+	pkgver = 4.8.1
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/MeshChatX
+	install = meshchatx.install
+	arch = x86_64
+	arch = aarch64
+	license = 0BSD
+	license = MIT
+	depends = fuse2
+	optdepends = noto-fonts-emoji: color emoji in the UI
+	provides = meshchatx
+	provides = reticulum-meshchatx
+	conflicts = meshchatx-git
+	options = !strip
+	options = !debug
+	source = https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/v4.8.1.tar.gz
+	sha256sums = 6a594d6caf80fae20363035be230017f59c6f6028b72189457b56e499db82c4d
+	source_x86_64 = ReticulumMeshChatX-v4.8.1-linux-x86_64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v4.8.1/ReticulumMeshChatX-v4.8.1-linux-x86_64.AppImage
+	sha256sums_x86_64 = 43272aa866a6bab58d7c2b0700f2226a1ea93a6d1ca0ee6823a64433144b1d8d
+	source_aarch64 = ReticulumMeshChatX-v4.8.1-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v4.8.1/ReticulumMeshChatX-v4.8.1-linux-arm64.AppImage
+	sha256sums_aarch64 = 485298d72b0f7c154df1ce7e5aedf15997ac06cc956fe0737d77c919b3d342e6
+
+pkgname = meshchatx

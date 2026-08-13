@@ -1,0 +1,21 @@
+pkgbase = reticulum-go-git
+	pkgdesc = Reticulum network stack (Go), built from git
+	pkgver = 1.0.1.r0.g0000000
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/Reticulum-Go
+	install = reticulum-go-git.install
+	arch = x86_64
+	arch = aarch64
+	arch = armv7h
+	license = Apache-2.0
+	makedepends = git
+	makedepends = go
+	makedepends = make
+	provides = reticulum-go
+	conflicts = reticulum-go
+	options = !debug
+	backup = var/lib/reticulum-go/config
+	source = git+https://github.com/Quad4-Software/Reticulum-Go.git#branch=master
+	sha256sums = SKIP
+
+pkgname = reticulum-go-git

@@ -1,0 +1,12 @@
+out/
+repo/
+public/
+pkg/*/src/
+pkg/*/pkg/
+pkg/*/*.pkg.tar.*
+pkg/*/*.log
+pkg/*/reticulum-go-*/
+pkg/*/MeshChatX-*/
+*.tar.gz
+*.tar.zst
+.SRCINFO.bak

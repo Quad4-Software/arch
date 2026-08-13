@@ -1,0 +1,81 @@
+# Pinned first-party actions (bump tag and SHA together when upgrading):
+#   actions/checkout@v7.0.1                     3d3c42e5aac5ba805825da76410c181273ba90b1
+#   actions/upload-artifact@v7.0.1              043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+#
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FORCE_DOCKER: "1"
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+
+      - name: Validate repo
+        run: sh scripts/check.sh
+
+  build:
+    name: makepkg (${{ matrix.package }}, ${{ matrix.arch }})
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: reticulum-go
+            arch: x86_64
+          - package: reticulum-go
+            arch: aarch64
+          - package: reticulum-go
+            arch: armv7h
+          - package: reticulum-go-git
+            arch: x86_64
+          - package: meshchatx
+            arch: x86_64
+          - package: meshchatx
+            arch: aarch64
+          - package: meshchatx-git
+            arch: x86_64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build package
+        env:
+          PKG_NAME: ${{ matrix.package }}
+          PKG_ARCH: ${{ matrix.arch }}
+        run: sh scripts/makepkg.sh "$PKG_NAME" "$PKG_ARCH"
+
+      - name: Upload package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ matrix.package }}-${{ matrix.arch }}
+          path: out/${{ matrix.arch }}/*.pkg.tar.zst
+          if-no-files-found: error

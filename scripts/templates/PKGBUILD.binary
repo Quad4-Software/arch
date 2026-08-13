@@ -1,0 +1,34 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=@NAME@
+pkgver=0
+pkgrel=1
+pkgdesc='Quad4 package (prebuilt release binary)'
+arch=('x86_64' 'aarch64' 'armv7h')
+url='https://github.com/@GITHUB@'
+license=('Apache-2.0')
+provides=('@NAME@')
+conflicts=('@NAME@-git')
+options=('!debug')
+install=@NAME@.install
+source_x86_64=("@NAME@-linux-amd64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-amd64")
+source_aarch64=("@NAME@-linux-arm64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-arm64")
+source_armv7h=("@NAME@-linux-arm-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-arm")
+# AUTO-SUMS-BEGIN
+sha256sums_x86_64=('REPLACE')
+sha256sums_aarch64=('REPLACE')
+sha256sums_armv7h=('REPLACE')
+# AUTO-SUMS-END
+
+package() {
+	local bin
+	case "$CARCH" in
+	x86_64) bin="@NAME@-linux-amd64-${pkgver}" ;;
+	aarch64) bin="@NAME@-linux-arm64-${pkgver}" ;;
+	armv7h) bin="@NAME@-linux-arm-${pkgver}" ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	install -Dm755 "$srcdir/$bin" "$pkgdir/usr/bin/@NAME@"
+}

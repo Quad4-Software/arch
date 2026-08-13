@@ -1,0 +1,7 @@
+# Default reviewers for pull requests.
+
+* @Sudo-Ivan
+/.github/ @Sudo-Ivan
+/scripts/ @Sudo-Ivan
+/pkg/ @Sudo-Ivan
+/conf/ @Sudo-Ivan

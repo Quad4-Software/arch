@@ -1,0 +1,62 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=reticulum-go-git
+pkgver=1.0.1.r0.g0000000
+pkgrel=1
+pkgdesc='Reticulum network stack (Go), built from git'
+arch=('x86_64' 'aarch64' 'armv7h')
+url='https://github.com/Quad4-Software/Reticulum-Go'
+license=('Apache-2.0')
+makedepends=('git' 'go' 'make')
+provides=('reticulum-go')
+conflicts=('reticulum-go')
+backup=('var/lib/reticulum-go/config')
+options=('!debug')
+install=reticulum-go-git.install
+source=('git+https://github.com/Quad4-Software/Reticulum-Go.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/Reticulum-Go"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/Reticulum-Go"
+	case "$CARCH" in
+	x86_64) export GOARCH=amd64 ;;
+	aarch64) export GOARCH=arm64 ;;
+	armv7h)
+		export GOARCH=arm
+		export GOARM=6
+		;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	export CGO_ENABLED=0
+	export GOFLAGS='-mod=vendor -trimpath'
+	export GOPATH="$srcdir/gopath"
+	export GOCACHE="$srcdir/gocache"
+	export GOMODCACHE="$srcdir/gomod"
+	mkdir -p "$GOPATH" "$GOCACHE"
+	make build VERSION="$pkgver"
+}
+
+package() {
+	cd "$srcdir/Reticulum-Go"
+	install -Dm755 bin/reticulum-go "$pkgdir/usr/bin/reticulum-go"
+	local name
+	for name in rgostatus rgoid rgoprobe rgopath rgocp rgox rnx rgosh rgopageserver rgoslow rgoselfcheck rgospeed rgodump rgosnap; do
+		ln -sfn reticulum-go "$pkgdir/usr/bin/$name"
+	done
+	make DESTDIR="$pkgdir" PREFIX=/usr install-man
+	make DESTDIR="$pkgdir" PREFIX=/usr BINDIR=/usr/bin INIT=all install-service
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

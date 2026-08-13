@@ -1,0 +1,104 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=meshchatx-git
+pkgver=4.8.2.r0.g0000000
+pkgrel=1
+pkgdesc='All-in-one Reticulum client, built from git'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Quad4-Software/MeshChatX'
+license=('0BSD' 'MIT')
+depends=('opus' 'opusfile' 'portaudio' 'espeak-ng' 'nss' 'gtk3' 'libnotify' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'libsecret' 'alsa-lib')
+makedepends=('git' 'nodejs' 'pnpm' 'python' 'python-pip' 'python-setuptools' 'python-wheel')
+optdepends=('noto-fonts-emoji: color emoji in the UI')
+provides=('meshchatx' 'reticulum-meshchatx')
+conflicts=('meshchatx')
+options=('!strip' '!debug')
+install=meshchatx-git.install
+source=('git+https://github.com/Quad4-Software/MeshChatX.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/MeshChatX"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+prepare() {
+	cd "$srcdir/MeshChatX"
+	export PNPM_HOME="$srcdir/.pnpm-home"
+	local venv="$srcdir/MeshChatX/.build-venv"
+
+	pnpm install --frozen-lockfile
+
+	python -m venv "$venv"
+	# shellcheck disable=SC1091
+	. "$venv/bin/activate"
+	pip install --upgrade pip setuptools wheel "uv==0.11.15"
+	uv lock --check
+	uv sync --group dev --active
+	python scripts/patch_lxst_pyogg_ogg_ctypes.py
+}
+
+build() {
+	cd "$srcdir/MeshChatX"
+	export PNPM_HOME="$srcdir/.pnpm-home"
+	export PYTHON_CMD="$srcdir/MeshChatX/.build-venv/bin/python"
+	local eb_arch unpacked
+
+	pnpm run electron-postinstall
+	pnpm run build
+	case "$CARCH" in
+	x86_64)
+		eb_arch=--x64
+		unpacked=dist/linux-unpacked
+		;;
+	aarch64)
+		eb_arch=--arm64
+		unpacked=dist/linux-arm64-unpacked
+		;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	pnpm exec electron-builder --linux --dir "$eb_arch"
+	[ -d "$unpacked" ]
+}
+
+package() {
+	cd "$srcdir/MeshChatX"
+	local unpacked
+	case "$CARCH" in
+	x86_64) unpacked=dist/linux-unpacked ;;
+	aarch64) unpacked=dist/linux-arm64-unpacked ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+
+	install -d "$pkgdir/usr/lib/meshchatx"
+	cp -a "$unpacked"/. "$pkgdir/usr/lib/meshchatx/"
+	install -d "$pkgdir/usr/bin"
+	ln -sfn /usr/lib/meshchatx/reticulum-meshchatx "$pkgdir/usr/bin/meshchatx"
+	ln -sfn meshchatx "$pkgdir/usr/bin/reticulum-meshchatx"
+
+	install -Dm644 logo/logo.png "$pkgdir/usr/share/icons/hicolor/512x512/apps/meshchatx.png"
+	install -d "$pkgdir/usr/share/applications"
+	cat >"$pkgdir/usr/share/applications/meshchatx.desktop" <<'EOF'
+[Desktop Entry]
+Name=Reticulum MeshChatX
+Comment=All-in-one Reticulum client
+Exec=meshchatx
+Icon=meshchatx
+Terminal=false
+Type=Application
+Categories=Network;
+StartupWMClass=reticulum-meshchatx
+EOF
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

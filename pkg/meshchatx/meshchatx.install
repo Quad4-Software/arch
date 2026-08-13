@@ -1,0 +1,13 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'meshchatx is installed. Run meshchatx or open Reticulum MeshChatX from the app menu.'
+	printf '%s\n' 'Color emoji: pacman -S noto-fonts-emoji'
+}
+
+post_upgrade() {
+	true
+}
+
+post_remove() {
+	true
+}

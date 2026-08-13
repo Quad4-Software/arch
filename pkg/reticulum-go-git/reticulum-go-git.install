@@ -1,0 +1,18 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'reticulum-go-git is installed but not enabled.'
+	printf '%s\n' 'systemd: systemctl enable --now reticulum-go'
+	printf '%s\n' 'OpenRC: rc-update add reticulum-go default && rc-service reticulum-go start'
+}
+
+post_upgrade() {
+	if [ -d /run/systemd/system ] && command -v systemctl >/dev/null 2>&1; then
+		systemctl daemon-reload >/dev/null 2>&1 || true
+	fi
+}
+
+post_remove() {
+	if [ -d /run/systemd/system ] && command -v systemctl >/dev/null 2>&1; then
+		systemctl daemon-reload >/dev/null 2>&1 || true
+	fi
+}

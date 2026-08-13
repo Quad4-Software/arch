@@ -1,0 +1,48 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=reticulum-go
+pkgver=1.0.1
+pkgrel=1
+pkgdesc='Reticulum network stack (Go), prebuilt release binary'
+arch=('x86_64' 'aarch64' 'armv7h')
+url='https://github.com/Quad4-Software/Reticulum-Go'
+license=('Apache-2.0')
+provides=('reticulum-go')
+conflicts=('reticulum-go-git')
+backup=('var/lib/reticulum-go/config')
+options=('!debug')
+makedepends=('make')
+install=reticulum-go.install
+source=("https://github.com/Quad4-Software/Reticulum-Go/archive/refs/tags/v${pkgver}.tar.gz")
+source_x86_64=("reticulum-go-linux-amd64-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-amd64")
+source_aarch64=("reticulum-go-linux-arm64-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-arm64")
+source_armv7h=("reticulum-go-linux-arm-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-arm")
+# AUTO-SUMS-BEGIN
+sha256sums=('6a1f75d8011d258546d504f4a64b23f1d9dd3e07cc8655c92b5fba5a21bac0c6')
+sha256sums_x86_64=('b86e2b8888a4b520c5e6538a35a69922fa5ac9d8c69504a486236c061cbd716e')
+sha256sums_aarch64=('aeffa840f84b9e9709918544123dec79ab12668d783635a72e24e4b4f45e5852')
+sha256sums_armv7h=('75b0be9164a5b87c29af832df2430d3199ba51a5fd49e17bb7ead41a51d04326')
+# AUTO-SUMS-END
+
+package() {
+	local bin srcdir_go
+	case "$CARCH" in
+	x86_64) bin="reticulum-go-linux-amd64-${pkgver}" ;;
+	aarch64) bin="reticulum-go-linux-arm64-${pkgver}" ;;
+	armv7h) bin="reticulum-go-linux-arm-${pkgver}" ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	srcdir_go="$srcdir/Reticulum-Go-${pkgver}"
+
+	install -Dm755 "$srcdir/$bin" "$pkgdir/usr/bin/reticulum-go"
+	make -C "$srcdir_go" DESTDIR="$pkgdir" PREFIX=/usr install-man
+	make -C "$srcdir_go" DESTDIR="$pkgdir" PREFIX=/usr BINDIR=/usr/bin INIT=all install-service
+	install -Dm644 "$srcdir_go/LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+
+	local name
+	for name in rgostatus rgoid rgoprobe rgopath rgocp rgox rnx rgosh rgopageserver rgoslow rgoselfcheck rgospeed rgodump rgosnap; do
+		ln -sfn reticulum-go "$pkgdir/usr/bin/$name"
+	done
+}

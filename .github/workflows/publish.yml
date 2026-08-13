@@ -1,0 +1,234 @@
+# Pinned first-party actions (bump tag and SHA together when upgrading):
+#   actions/checkout@v7.0.1                     3d3c42e5aac5ba805825da76410c181273ba90b1
+#   actions/upload-artifact@v7.0.1              043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+#   actions/download-artifact@v8.0.1            3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+#   actions/configure-pages@v6.0.0              45bfe0192ca1faeb007ade9deae92b16b8254a0d
+#   actions/upload-pages-artifact@v5.0.0        fc324d3547104276b827a68afc52ff2a11cc49c9
+#   actions/deploy-pages@v5.0.0                 cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+#
+# GitHub Pages hosts https://arch.quad4.io (CNAME in the Pages tree).
+# Does not use pull_request_target or workflow_run.
+# Publish only from this repository default branch, schedule, or maintainer dispatch.
+name: Publish repo
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: Space-separated package names (empty builds every package)
+        required: false
+        type: string
+  repository_dispatch:
+    types:
+      - quad4-rebuild
+
+concurrency:
+  group: publish-repo
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_DOCKER: "1"
+
+jobs:
+  build:
+    name: makepkg (${{ matrix.package }}, ${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: reticulum-go
+            arch: x86_64
+          - package: reticulum-go
+            arch: aarch64
+          - package: reticulum-go
+            arch: armv7h
+          - package: reticulum-go-git
+            arch: x86_64
+          - package: reticulum-go-git
+            arch: aarch64
+          - package: reticulum-go-git
+            arch: armv7h
+          - package: meshchatx
+            arch: x86_64
+          - package: meshchatx
+            arch: aarch64
+          - package: meshchatx-git
+            arch: x86_64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Maybe skip package
+        id: want
+        env:
+          WANT: ${{ github.event.inputs.packages }}
+          PKG_NAME: ${{ matrix.package }}
+        run: |
+          set -eu
+          if [ -z "${WANT:-}" ]; then
+            echo "run=true" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          case " $WANT " in
+          *" $PKG_NAME "*) echo "run=true" >>"$GITHUB_OUTPUT" ;;
+          *) echo "run=false" >>"$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Build package
+        if: steps.want.outputs.run == 'true'
+        env:
+          PKG_NAME: ${{ matrix.package }}
+          PKG_ARCH: ${{ matrix.arch }}
+        run: sh scripts/makepkg.sh "$PKG_NAME" "$PKG_ARCH"
+
+      - name: Upload package
+        if: steps.want.outputs.run == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ matrix.package }}-${{ matrix.arch }}
+          path: out/${{ matrix.arch }}/*.pkg.tar.zst
+          if-no-files-found: error
+
+  assemble:
+    name: repo-add
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: artifacts
+
+      - name: Layout out/\$arch and repo-add
+        run: |
+          set -eu
+          mkdir -p out/x86_64 out/aarch64 out/armv7h
+          find artifacts -type f -name '*.pkg.tar.zst' -exec sh -c '
+            for f do
+              base=$(basename "$f")
+              case "$base" in
+              *-x86_64.pkg.tar.zst) dest=out/x86_64 ;;
+              *-aarch64.pkg.tar.zst) dest=out/aarch64 ;;
+              *-armv7h.pkg.tar.zst) dest=out/armv7h ;;
+              *) echo "unrecognized package arch: $base" >&2; exit 1 ;;
+              esac
+              cp -a "$f" "$dest/"
+            done
+          ' sh {} +
+          for arch in x86_64 aarch64 armv7h; do
+            if ls "out/$arch"/*.pkg.tar.zst >/dev/null 2>&1; then
+              sh scripts/repo-add.sh "$arch"
+            fi
+          done
+          sh scripts/assemble-pages.sh
+
+      - name: Upload repo tree
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: repo-tree
+          path: repo
+          if-no-files-found: error
+
+      - name: Upload Pages tree
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pages-tree
+          path: public
+          include-hidden-files: true
+          if-no-files-found: error
+
+  deploy-pages:
+    name: GitHub Pages
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      pages: write
+      id-token: write
+      actions: read
+    environment:
+      name: github-pages
+      url: https://arch.quad4.io
+    steps:
+      - name: Download Pages tree
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pages-tree
+          path: public
+
+      - name: Enable Pages and custom domain
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_CNAME: arch.quad4.io
+        run: |
+          set -eu
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=workflow \
+              -f cname="${PAGES_CNAME}"
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=workflow \
+              -f cname="${PAGES_CNAME}"
+          fi
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+            -F https_enforced=true || true
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public
+          include-hidden-files: true
+
+      - name: Deploy Pages
+        id: deploy
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  publish-release:
+    name: Rolling GitHub Releases
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download repo tree
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: repo-tree
+          path: repo
+
+      - name: Publish rolling GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: sh scripts/publish-release.sh

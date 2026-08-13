@@ -1,0 +1,60 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=meshchatx
+pkgver=4.8.1
+pkgrel=1
+pkgdesc='All-in-one Reticulum client (prebuilt AppImage)'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Quad4-Software/MeshChatX'
+license=('0BSD' 'MIT')
+depends=('fuse2')
+optdepends=('noto-fonts-emoji: color emoji in the UI')
+provides=('meshchatx' 'reticulum-meshchatx')
+conflicts=('meshchatx-git')
+options=('!strip' '!debug')
+install=meshchatx.install
+source=("https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/v${pkgver}.tar.gz")
+source_x86_64=("ReticulumMeshChatX-v${pkgver}-linux-x86_64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v${pkgver}/ReticulumMeshChatX-v${pkgver}-linux-x86_64.AppImage")
+source_aarch64=("ReticulumMeshChatX-v${pkgver}-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v${pkgver}/ReticulumMeshChatX-v${pkgver}-linux-arm64.AppImage")
+# AUTO-SUMS-BEGIN
+sha256sums=('6a594d6caf80fae20363035be230017f59c6f6028b72189457b56e499db82c4d')
+sha256sums_x86_64=('43272aa866a6bab58d7c2b0700f2226a1ea93a6d1ca0ee6823a64433144b1d8d')
+sha256sums_aarch64=('485298d72b0f7c154df1ce7e5aedf15997ac06cc956fe0737d77c919b3d342e6')
+# AUTO-SUMS-END
+
+package() {
+	local appimage srcdir_src
+	case "$CARCH" in
+	x86_64) appimage="ReticulumMeshChatX-v${pkgver}-linux-x86_64.AppImage" ;;
+	aarch64) appimage="ReticulumMeshChatX-v${pkgver}-linux-arm64.AppImage" ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	srcdir_src="$srcdir/MeshChatX-${pkgver}"
+
+	install -Dm755 "$srcdir/$appimage" "$pkgdir/opt/meshchatx/meshchatx.AppImage"
+	install -d "$pkgdir/usr/bin"
+	cat >"$pkgdir/usr/bin/meshchatx" <<'EOF'
+#!/bin/sh
+export APPIMAGE_EXTRACT_AND_RUN="${APPIMAGE_EXTRACT_AND_RUN:-1}"
+exec /opt/meshchatx/meshchatx.AppImage "$@"
+EOF
+	chmod 755 "$pkgdir/usr/bin/meshchatx"
+	ln -sfn meshchatx "$pkgdir/usr/bin/reticulum-meshchatx"
+
+	install -Dm644 "$srcdir_src/logo/logo.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/meshchatx.png"
+	install -d "$pkgdir/usr/share/applications"
+	cat >"$pkgdir/usr/share/applications/meshchatx.desktop" <<'EOF'
+[Desktop Entry]
+Name=Reticulum MeshChatX
+Comment=All-in-one Reticulum client
+Exec=meshchatx
+Icon=meshchatx
+Terminal=false
+Type=Application
+Categories=Network;
+StartupWMClass=reticulum-meshchatx
+EOF
+	install -Dm644 "$srcdir_src/LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}
