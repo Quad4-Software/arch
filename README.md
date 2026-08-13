@@ -1,29 +1,43 @@
-# Quad4 Arch repository
+# Quad4 Arch
 
-Arch pacman repository for Quad4 software.
+Unofficial [pacman](https://wiki.archlinux.org/title/Pacman) repository for Quad4 software. Hosted at [arch.quad4.io](https://arch.quad4.io).
 
-Users add a `[quad4]` section to `/etc/pacman.conf` and install with `pacman -S`. Maintainers add packages under `pkg/`, CI builds them with `makepkg`, and `repo-add` writes `quad4.db.tar.gz` plus `quad4.files.tar.gz`.
+## Install
 
-## Add the repo (Arch / CachyOS)
+Append this to `/etc/pacman.conf` after the official `[core]` and `[extra]` blocks, or copy [conf/pacman-quad4.conf](conf/pacman-quad4.conf):
 
-Copy [conf/pacman-quad4.conf](conf/pacman-quad4.conf) into `/etc/pacman.conf` after the official `[core]` and `[extra]` blocks, then:
+```ini
+[quad4]
+SigLevel = Optional TrustAll
+Server = https://arch.quad4.io/$arch
+Server = https://github.com/Quad4-Software/arch/releases/download/repo-$arch
+```
+
+Then:
 
 ```bash
 sudo pacman -Syu
 sudo pacman -S reticulum-go meshchatx
 ```
 
-`reticulum-go` is the prebuilt GitHub release binary. `reticulum-go-git` builds current `master` and conflicts with `reticulum-go`.
+The first Server is [arch.quad4.io](https://arch.quad4.io). The second is a rolling GitHub Release named `repo-$arch`.
 
-`meshchatx` wraps the GitHub release AppImage for `x86_64` and `aarch64`. `meshchatx-git` builds current `master` with Electron and conflicts with `meshchatx`.
+Packages are unsigned until a key is placed at `keys/quad4.gpg`. Keep `SigLevel = Optional TrustAll` until then. After packages and the database are signed, switch to `SigLevel = Required` and import the public key.
 
-Primary Server is `https://arch.quad4.io/$arch`. Fallback Server is a rolling GitHub Release named `repo-$arch`.
+## Packages
 
-The repo is unsigned until a packaging key is added under `keys/quad4.gpg`. `SigLevel = Optional TrustAll` is required until then. After you sign packages and the database, switch that line to `SigLevel = Required` and import the public key.
+| Package | Description |
+| --- | --- |
+| `reticulum-go` | Reticulum-Go, prebuilt GitHub release (`x86_64`, `aarch64`, `armv7h`) |
+| `reticulum-go-git` | Reticulum-Go built from `master` |
+| `meshchatx` | MeshChatX AppImage (`x86_64`, `aarch64`) |
+| `meshchatx-git` | MeshChatX built from `master` |
 
-## Maintainer commands
+`reticulum-go` conflicts with `reticulum-go-git`. `meshchatx` conflicts with `meshchatx-git`.
 
-On Arch, `makepkg` and `repo-add` run on the host. Anywhere else, scripts use the pinned `archlinux:base-devel` image from `conf/ci-pins.env`.
+## Development
+
+On Arch, `makepkg` and `repo-add` run on the host. Elsewhere, scripts use the pinned `archlinux:base-devel` image from `conf/ci-pins.env`.
 
 ```bash
 make check
@@ -32,23 +46,23 @@ make repo
 make pages
 ```
 
-Bump a binary package when upstream tags a release:
+Bump a binary package after an upstream release:
 
 ```bash
 sh scripts/bump-binary.sh reticulum-go v1.0.2
 sh scripts/bump-binary.sh meshchatx v4.8.2
 ```
 
-Add another Quad4 project:
+Scaffold a new package:
 
 ```bash
 sh scripts/new-pkg.sh other-tool --kind binary --github Quad4-Software/other-tool --tag v0.1.0
 sh scripts/new-pkg.sh other-tool-git --kind git --github Quad4-Software/other-tool
 ```
 
-Then edit the new `PKGBUILD` `package()` as needed and add a matrix row in `.github/workflows/ci.yml` and `publish.yml`.
+Edit `package()` in the new PKGBUILD, then add matrix rows in `.github/workflows/ci.yml` and `publish.yml`.
 
-Rebuild from another Quad4 repo after a release (classic PAT or GitHub App with `actions: write` on this repository):
+Rebuild from another Quad4 repository (needs `actions: write` on this repo):
 
 ```bash
 gh api repos/Quad4-Software/arch/dispatches -f event_type=quad4-rebuild
@@ -56,6 +70,9 @@ gh api repos/Quad4-Software/arch/dispatches -f event_type=quad4-rebuild
 
 ## License
 
-This repository (PKGBUILDs, scripts, and CI) is licensed under [0BSD](LICENSE).
+PKGBUILDs, scripts, and CI are [0BSD](LICENSE).
 
-Packaged software keeps its own license. `reticulum-go` and `reticulum-go-git` install Reticulum-Go, which is Apache-2.0. `meshchatx` and `meshchatx-git` install MeshChatX (0BSD with upstream MIT). That is what the PKGBUILD `license=` field records.
+Packaged software keeps its own license, recorded in each PKGBUILD `license=` field:
+
+- Reticulum-Go: Apache-2.0
+- MeshChatX: 0BSD, with upstream MIT
