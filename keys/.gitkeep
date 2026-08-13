@@ -1,2 +1,3 @@
-# Place the ASCII-armored or binary public packaging key here as quad4.gpg
-# after you start signing packages and the repo database.
+# Public packaging key (Ed25519).
+# Fingerprint: 6C79 CFB5 888F 748F 7432  5812 85A5 6747 E642 DE0B
+# Private key is keys/quad4-private.asc (gitignored). Do not commit it.

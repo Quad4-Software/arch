@@ -13,3 +13,4 @@ pkg/*/*.AppImage
 *.tar.gz
 *.tar.zst
 .SRCINFO.bak
+keys/quad4-private.asc
