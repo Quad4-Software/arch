@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Quad4 Arch</title>
+	<meta name="description" content="Pacman repository for Quad4 software">
+	<style>
+		:root {
+			--bg: #0b0f14;
+			--fg: #e8eef4;
+			--muted: #8b9aab;
+			--accent: #4aa3f0;
+			--accent-dim: #1a3a58;
+			--card: #121820;
+			--border: #243044;
+			--code: #080c10;
+		}
+		* { box-sizing: border-box; }
+		html, body {
+			margin: 0;
+			padding: 0;
+			background: var(--bg);
+			color: var(--fg);
+			font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+		}
+		a { color: var(--accent); text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		main {
+			max-width: 44rem;
+			margin: 0 auto;
+			padding: 3rem 1.25rem 4rem;
+		}
+		header {
+			margin-bottom: 2.5rem;
+			padding-bottom: 1.5rem;
+			border-bottom: 1px solid var(--border);
+		}
+		.kicker {
+			color: var(--accent);
+			font-size: 0.75rem;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			margin: 0 0 0.6rem;
+		}
+		h1 {
+			font-size: 2.1rem;
+			font-weight: 650;
+			letter-spacing: -0.03em;
+			margin: 0 0 0.4rem;
+		}
+		.lede {
+			color: var(--muted);
+			margin: 0;
+			font-size: 1.05rem;
+		}
+		h2 {
+			font-size: 1.05rem;
+			font-weight: 650;
+			margin: 2rem 0 0.75rem;
+			letter-spacing: -0.02em;
+		}
+		p { margin: 0 0 0.9rem; }
+		.muted { color: var(--muted); }
+		pre {
+			background: var(--code);
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			padding: 1rem 1.1rem;
+			overflow-x: auto;
+			font: 0.85rem/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+			margin: 0 0 1rem;
+		}
+		code {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+			font-size: 0.9em;
+		}
+		p code, td code, li code {
+			background: var(--accent-dim);
+			color: var(--fg);
+			padding: 0.1em 0.35em;
+			border-radius: 4px;
+		}
+		.packages {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 0.95rem;
+		}
+		.packages th, .packages td {
+			text-align: left;
+			padding: 0.55rem 0.7rem;
+			border-bottom: 1px solid var(--border);
+			vertical-align: top;
+		}
+		.packages th {
+			color: var(--muted);
+			font-weight: 550;
+			font-size: 0.75rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+		}
+		.packages tr:last-child td { border-bottom: 0; }
+		.files h3 {
+			font-size: 0.85rem;
+			color: var(--muted);
+			font-weight: 600;
+			margin: 1.1rem 0 0.35rem;
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+		.files ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			background: var(--card);
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			overflow: hidden;
+		}
+		.files li { border-top: 1px solid var(--border); }
+		.files li:first-child { border-top: 0; }
+		.files a {
+			display: block;
+			padding: 0.4rem 0.8rem;
+			color: var(--fg);
+			font: 0.82rem/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+		.files a:hover {
+			background: var(--accent-dim);
+			text-decoration: none;
+			color: var(--accent);
+		}
+		footer {
+			margin-top: 3rem;
+			padding-top: 1.25rem;
+			border-top: 1px solid var(--border);
+			color: var(--muted);
+			font-size: 0.85rem;
+		}
+	</style>
+</head>
+<body>
+<main>
+	<header>
+		<p class="kicker">Quad4</p>
+		<h1>Arch repository</h1>
+		<p class="lede">Pacman repository for Quad4 software. Add it to <code>/etc/pacman.conf</code> and install with <code>pacman -S</code>.</p>
+	</header>
+
+	<h2>Install</h2>
+	<p>Append this after the official <code>[core]</code> and <code>[extra]</code> blocks, or use <a href="pacman-quad4.conf">pacman-quad4.conf</a>.</p>
+	<pre>[quad4]
+SigLevel = Optional TrustAll
+Server = https://arch.quad4.io/$arch
+Server = https://github.com/Quad4-Software/arch/releases/download/repo-$arch</pre>
+	<pre>sudo pacman -Syu
+sudo pacman -S reticulum-go meshchatx</pre>
+	<p class="muted">Packages are unsigned until a packaging key is published. Keep <code>SigLevel = Optional TrustAll</code> until then.</p>
+
+	<h2>Packages</h2>
+	<table class="packages">
+		<thead>
+			<tr><th>Name</th><th>Description</th></tr>
+		</thead>
+		<tbody>
+			<tr><td><code>reticulum-go</code></td><td>Reticulum-Go, prebuilt release</td></tr>
+			<tr><td><code>reticulum-go-git</code></td><td>Reticulum-Go from master</td></tr>
+			<tr><td><code>meshchatx</code></td><td>MeshChatX AppImage</td></tr>
+			<tr><td><code>meshchatx-git</code></td><td>MeshChatX from master</td></tr>
+		</tbody>
+	</table>
+	<p class="muted"><code>reticulum-go</code> conflicts with <code>reticulum-go-git</code>. <code>meshchatx</code> conflicts with <code>meshchatx-git</code>.</p>
+
+	<h2>Files</h2>
+	<div class="files">
+<!--PACKAGE_FILES-->
+	</div>
+
+	<footer>
+		<p><a href="https://github.com/Quad4-Software/arch">Source</a> · PKGBUILDs and scripts are 0BSD · packaged software keeps its own license</p>
+	</footer>
+</main>
+</body>
+</html>

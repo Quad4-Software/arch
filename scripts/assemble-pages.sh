@@ -30,21 +30,39 @@ else
 	printf '%s\n' "$cname" >"$PUB/CNAME"
 fi
 
-index="$PUB/index.html"
-{
-	printf '%s\n' '<!DOCTYPE html>'
-	printf '%s\n' '<html lang="en"><head><meta charset="utf-8"><title>Quad4 Arch repo</title></head><body>'
-	printf '%s\n' "<h1>${REPO_NAME}</h1>"
-	printf '%s\n' '<p>Custom pacman repository for Quad4 packages. Not AUR.</p>'
-	printf '%s\n' '<p>Add <a href="pacman-quad4.conf">pacman-quad4.conf</a> to /etc/pacman.conf then pacman -Syu.</p>'
-	printf '%s\n' '<ul>'
-	find "$PUB" \( -name '*.pkg.tar.zst' -o -name '*.db' -o -name '*.db.tar.gz' -o -name '*.files' -o -name '*.files.tar.gz' \) \
-		| sed "s|^$PUB/||" | LC_ALL=C sort | while IFS= read -r rel; do
+[ -f "$ROOT/site/index.html" ] || die "missing site/index.html"
+
+files_inc="$(mktemp)"
+trap 'rm -f "$files_inc"' EXIT
+find "$PUB" \( -name '*.pkg.tar.zst' -o -name '*.db' -o -name '*.db.tar.gz' -o -name '*.files' -o -name '*.files.tar.gz' \) \
+	| sed "s|^$PUB/||" | LC_ALL=C sort | {
+	current=""
+	while IFS= read -r rel; do
 		[ -n "$rel" ] || continue
-		printf '<li><a href="%s">%s</a></li>\n' "$rel" "$rel"
+		arch="${rel%%/*}"
+		base="${rel#*/}"
+		if [ "$arch" != "$current" ]; then
+			[ -n "$current" ] && printf '</ul>\n'
+			printf '<h3>%s</h3>\n<ul>\n' "$arch"
+			current="$arch"
+		fi
+		printf '<li><a href="%s">%s</a></li>\n' "$rel" "$base"
 	done
-	printf '%s\n' '</ul></body></html>'
-} >"$index"
+	if [ -n "$current" ]; then
+		printf '</ul>\n'
+	else
+		printf '<p class="muted">No packages published yet.</p>\n'
+	fi
+} >"$files_inc"
+
+awk -v files="$files_inc" '
+	/<!--PACKAGE_FILES-->/ {
+		while ((getline line < files) > 0) print line
+		close(files)
+		next
+	}
+	{ print }
+' "$ROOT/site/index.html" >"$PUB/index.html"
 
 log "pages tree at $PUB"
 find "$PUB" -type f | LC_ALL=C sort
