@@ -6,7 +6,10 @@ pkg/*/pkg/
 pkg/*/*.pkg.tar.*
 pkg/*/*.log
 pkg/*/reticulum-go-*/
+pkg/*/reticulum-go-linux-*
 pkg/*/MeshChatX-*/
+pkg/*/ReticulumMeshChatX-*
+pkg/*/*.AppImage
 *.tar.gz
 *.tar.zst
 .SRCINFO.bak
