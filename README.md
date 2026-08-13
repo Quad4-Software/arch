@@ -21,25 +21,6 @@ Primary Server is `https://arch.quad4.io/$arch`. Fallback Server is a rolling Gi
 
 The repo is unsigned until a packaging key is added under `keys/quad4.gpg`. `SigLevel = Optional TrustAll` is required until then. After you sign packages and the database, switch that line to `SigLevel = Required` and import the public key.
 
-Point DNS for `arch.quad4.io` at GitHub Pages:
-
-```
-arch.quad4.io  CNAME  quad4-software.github.io
-```
-
-This workflow publishes the site with GitHub Actions. Enable Pages once: repository Settings, Pages, source GitHub Actions. The first successful Publish run sets the custom domain and deploys `public/` (including `CNAME`). The `github-pages` environment is created on that first deploy.
-
-## Layout
-
-```
-conf/           repo name, pinned Arch container digest, pacman snippet
-pkg/            one directory per package (PKGBUILD, pkg.conf, .install)
-scripts/        check, bump, makepkg, repo-add, Pages, GitHub Release
-.github/        pinned Actions (full commit SHA)
-```
-
-`pkg/*/pkg.conf` is the catalog. `KIND=binary` wraps GitHub release assets. `KIND=git` clones and builds.
-
 ## Maintainer commands
 
 On Arch, `makepkg` and `repo-add` run on the host. Anywhere else, scripts use the pinned `archlinux:base-devel` image from `conf/ci-pins.env`.

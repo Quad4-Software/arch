@@ -1,5 +1,5 @@
 #!/bin/sh
-# Assemble the GitHub Pages tree from repo/.
+# Assemble the GitHub Pages tree.
 
 set -eu
 
@@ -12,9 +12,9 @@ PUB="$ROOT/public"
 rm -rf "$PUB"
 mkdir -p "$PUB"
 
-[ -d "$ROOT/repo" ] || die "repo/ missing (run repo-add.sh first)"
-
-cp -a "$ROOT/repo/." "$PUB/"
+if [ -d "$ROOT/repo" ]; then
+	cp -a "$ROOT/repo/." "$PUB/"
+fi
 cp "$ROOT/conf/pacman-quad4.conf" "$PUB/pacman-quad4.conf"
 if [ -f "$ROOT/keys/quad4.gpg" ]; then
 	cp "$ROOT/keys/quad4.gpg" "$PUB/quad4.gpg"
