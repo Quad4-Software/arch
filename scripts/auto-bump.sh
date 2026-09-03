@@ -1,5 +1,6 @@
 #!/bin/sh
 # Detect newer upstream releases and Arch image pins, apply bumps in-tree.
+# Binary bumps verify cosign/SLSA attestations via bump-binary.sh.
 #
 # Usage: auto-bump.sh
 # Writes GitHub Actions outputs when GITHUB_OUTPUT is set:
@@ -47,6 +48,7 @@ bump_binary_packages() {
 		load_pkg_conf "$name"
 		[ "$KIND" = "binary" ] || continue
 		[ -n "${TAG:-}" ] || die "$name: binary pkg.conf missing TAG"
+		[ -n "${VERIFY:-}" ] || die "$name: binary pkg.conf missing VERIFY"
 
 		latest="$(gh api "repos/${GITHUB}/releases/latest" --jq '.tag_name')"
 		[ -n "$latest" ] || die "$name: empty latest release tag from ${GITHUB}"
@@ -61,6 +63,51 @@ bump_binary_packages() {
 		CHANGED=1
 		append_summary "${name} ${TAG} -> ${latest}"
 	done
+}
+
+verify_arch_digest() {
+	tag="$1"
+	want="$2"
+	detail="$(mktemp)"
+	curl -fsSL --retry 3 --retry-delay 2 \
+		"https://hub.docker.com/v2/repositories/library/archlinux/tags/${tag}" \
+		>"$detail"
+	got="$(python3 - "$detail" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as f:
+	data = json.load(f)
+digest = data.get("digest") or ""
+if not digest.startswith("sha256:"):
+	raise SystemExit("tag detail missing sha256 digest")
+print(digest)
+PY
+	)"
+	rm -f "$detail"
+	[ "$got" = "$want" ] || die "Arch image digest mismatch for ${tag}: list=$want detail=$got"
+	log "arch image digest verified for $tag"
+}
+
+write_ci_pins() {
+	new_tag="$1"
+	new_digest="$2"
+	cat >"$ROOT/conf/ci-pins.env" <<EOF
+# Pinned CI images. Bump tag and digest together.
+# Official Arch Linux docker image: https://hub.docker.com/_/archlinux
+#
+#   archlinux:${new_tag}
+#   digest ${new_digest}
+
+ARCHLINUX_IMAGE=docker.io/library/archlinux:${new_tag}
+ARCHLINUX_DIGEST=${new_digest}
+
+# Release verification tools (linux-amd64). Bump version and sha256 together.
+COSIGN_VERSION=${COSIGN_VERSION}
+COSIGN_SHA256=${COSIGN_SHA256}
+SLSA_VERIFIER_VERSION=${SLSA_VERIFIER_VERSION}
+SLSA_VERIFIER_SHA256=${SLSA_VERIFIER_SHA256}
+EOF
 }
 
 bump_arch_image() {
@@ -94,6 +141,8 @@ PY
 	new_digest="${parsed#* }"
 	[ -n "$new_tag" ] && [ -n "$new_digest" ] || die "failed to parse Arch image pin"
 
+	verify_arch_digest "$new_tag" "$new_digest"
+
 	current_ref="${ARCHLINUX_IMAGE##*:}"
 	if [ "$current_ref" = "$new_tag" ] && [ "$ARCHLINUX_DIGEST" = "$new_digest" ]; then
 		log "arch image: already at $new_tag"
@@ -101,16 +150,7 @@ PY
 	fi
 
 	log "arch image: $current_ref -> $new_tag"
-	cat >"$ROOT/conf/ci-pins.env" <<EOF
-# Pinned CI images. Bump tag and digest together.
-# Official Arch Linux docker image: https://hub.docker.com/_/archlinux
-#
-#   archlinux:${new_tag}
-#   digest ${new_digest}
-
-ARCHLINUX_IMAGE=docker.io/library/archlinux:${new_tag}
-ARCHLINUX_DIGEST=${new_digest}
-EOF
+	write_ci_pins "$new_tag" "$new_digest"
 	CHANGED=1
 	append_summary "archlinux ${current_ref} -> ${new_tag}"
 }

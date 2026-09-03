@@ -1,5 +1,6 @@
 #!/bin/sh
 # Update a binary PKGBUILD to a GitHub release tag and refresh sha256sums.
+# Verifies release assets when pkg.conf sets VERIFY=cosign or VERIFY=slsa.
 #
 # Usage: bump-binary.sh NAME TAG
 # Example: bump-binary.sh reticulum-go v1.0.1
@@ -43,6 +44,68 @@ expand_ver() {
 	printf '%s' "$1" | sed "s/@VER@/${VER}/g"
 }
 
+ensure_verify_tools() {
+	case "${VERIFY:-}" in
+	cosign | slsa) ;;
+	"" | none)
+		return 0
+		;;
+	*)
+		die "$NAME: unknown VERIFY=${VERIFY}"
+		;;
+	esac
+	if [ -x "$ROOT/.tools/cosign" ] && [ -x "$ROOT/.tools/slsa-verifier" ]; then
+		export QUAD4_TOOLS="$ROOT/.tools"
+		return 0
+	fi
+	tools_dir="$(sh "$ROOT/scripts/install-verify-tools.sh")"
+	export QUAD4_TOOLS="$tools_dir"
+}
+
+verify_blob() {
+	blob="$1"
+	asset_name="$2"
+	case "${VERIFY:-}" in
+	"" | none)
+		log "verify skipped for $asset_name (VERIFY unset)"
+		return 0
+		;;
+	cosign)
+		[ -n "${COSIGN_PUB:-}" ] || die "$NAME: VERIFY=cosign needs COSIGN_PUB"
+		pub="$ROOT/$COSIGN_PUB"
+		[ -f "$pub" ] || die "$NAME: missing cosign pub $COSIGN_PUB"
+		bundle_name="${asset_name}.cosign.bundle"
+		bundle_path="$WORKDIR/${bundle_name}"
+		download "${base}/${bundle_name}" "$bundle_path"
+		sh "$ROOT/scripts/verify-asset.sh" \
+			--mode cosign \
+			--blob "$blob" \
+			--bundle "$bundle_path" \
+			--key "$pub"
+		;;
+	slsa)
+		[ -n "${SLSA_PROVENANCE:-}" ] || die "$NAME: VERIFY=slsa needs SLSA_PROVENANCE"
+		[ -n "${SLSA_SOURCE_URI:-}" ] || die "$NAME: VERIFY=slsa needs SLSA_SOURCE_URI"
+		prov_name="$(expand_ver "$SLSA_PROVENANCE")"
+		prov_path="$WORKDIR/provenance.intoto.jsonl"
+		if [ ! -f "$prov_path" ]; then
+			download "${base}/${prov_name}" "$prov_path"
+		fi
+		sh "$ROOT/scripts/verify-asset.sh" \
+			--mode slsa \
+			--blob "$blob" \
+			--provenance "$prov_path" \
+			--source-uri "$SLSA_SOURCE_URI" \
+			--source-tag "$TAG"
+		;;
+	*)
+		die "$NAME: unknown VERIFY=${VERIFY}"
+		;;
+	esac
+}
+
+ensure_verify_tools
+
 base="https://github.com/${GITHUB}/releases/download/${TAG}"
 src_url="https://github.com/${GITHUB}/archive/refs/tags/${TAG}.tar.gz"
 
@@ -56,15 +119,21 @@ sum_x86=""
 sum_arm64=""
 sum_armv7=""
 if [ -n "${ASSET_x86_64:-}" ]; then
-	download "${base}/$(expand_ver "$ASSET_x86_64")" "$WORKDIR/amd64"
+	asset="$(expand_ver "$ASSET_x86_64")"
+	download "${base}/${asset}" "$WORKDIR/amd64"
+	verify_blob "$WORKDIR/amd64" "$asset"
 	sum_x86="$(sum_of "$WORKDIR/amd64")"
 fi
 if [ -n "${ASSET_aarch64:-}" ]; then
-	download "${base}/$(expand_ver "$ASSET_aarch64")" "$WORKDIR/arm64"
+	asset="$(expand_ver "$ASSET_aarch64")"
+	download "${base}/${asset}" "$WORKDIR/arm64"
+	verify_blob "$WORKDIR/arm64" "$asset"
 	sum_arm64="$(sum_of "$WORKDIR/arm64")"
 fi
 if [ -n "${ASSET_armv7h:-}" ]; then
-	download "${base}/$(expand_ver "$ASSET_armv7h")" "$WORKDIR/arm"
+	asset="$(expand_ver "$ASSET_armv7h")"
+	download "${base}/${asset}" "$WORKDIR/arm"
+	verify_blob "$WORKDIR/arm" "$asset"
 	sum_armv7="$(sum_of "$WORKDIR/arm")"
 fi
 

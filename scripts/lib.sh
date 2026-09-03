@@ -33,6 +33,10 @@ load_repo_conf() {
 	: "${REPO_NAME:?repo.conf missing REPO_NAME}"
 	: "${ARCHLINUX_IMAGE:?ci-pins.env missing ARCHLINUX_IMAGE}"
 	: "${ARCHLINUX_DIGEST:?ci-pins.env missing ARCHLINUX_DIGEST}"
+	: "${COSIGN_VERSION:?ci-pins.env missing COSIGN_VERSION}"
+	: "${COSIGN_SHA256:?ci-pins.env missing COSIGN_SHA256}"
+	: "${SLSA_VERIFIER_VERSION:?ci-pins.env missing SLSA_VERIFIER_VERSION}"
+	: "${SLSA_VERIFIER_SHA256:?ci-pins.env missing SLSA_VERIFIER_SHA256}"
 }
 
 load_pkg_conf() {
@@ -50,12 +54,17 @@ load_pkg_conf() {
 	ASSET_aarch64=
 	ASSET_armv7h=
 	ARCHES=
+	VERIFY=
+	COSIGN_PUB=
+	SLSA_PROVENANCE=
+	SLSA_SOURCE_URI=
 	# shellcheck disable=SC1090
 	. "$_conf"
 	: "${KIND:?${_pkg} pkg.conf missing KIND}"
 	: "${GITHUB:?${_pkg} pkg.conf missing GITHUB}"
 	export KIND GITHUB TAG BRANCH SOURCE_TARBALL CONFLICTS PROVIDES
 	export ASSET_x86_64 ASSET_aarch64 ASSET_armv7h ARCHES
+	export VERIFY COSIGN_PUB SLSA_PROVENANCE SLSA_SOURCE_URI
 }
 
 list_packages() {

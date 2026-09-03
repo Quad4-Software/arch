@@ -49,9 +49,17 @@ make pages
 Bump a binary package after an upstream release:
 
 ```bash
+sh scripts/install-verify-tools.sh
 sh scripts/bump-binary.sh reticulum-go v1.1.1
 sh scripts/bump-binary.sh meshchatx v4.8.5
 ```
+
+Binary bumps fail closed unless release assets verify:
+
+- `reticulum-go`: cosign blob attestation (`.cosign.bundle`) against the pinned key in `keys/upstream/reticulum-go.cosign.pub`
+- `meshchatx`: SLSA provenance (`meshchatx-linux-v*.intoto.jsonl`) via `slsa-verifier` for `github.com/Quad4-Software/MeshChatX` and the release tag
+
+Tool versions and sha256 pins live in `conf/ci-pins.env`. Arch image bumps cross-check the Docker Hub tag digest before rewriting the pin.
 
 Or let CI do it. The Auto bump workflow runs daily, on `workflow_dispatch`, and on `repository_dispatch` type `quad4-bump`. It updates binary package TAGs and the Arch image pin in `conf/ci-pins.env`, opens a PR on `chore/auto-bump`, and enables auto-merge when CI is green.
 

@@ -36,10 +36,14 @@ jobs:
           token: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
           persist-credentials: true
 
+      - name: Install verify tools
+        run: sh scripts/install-verify-tools.sh
+
       - name: Auto bump
         id: bump
         env:
           GH_TOKEN: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
+          QUAD4_TOOLS: ${{ github.workspace }}/.tools
         run: sh scripts/auto-bump.sh
 
       - name: Create or update PR

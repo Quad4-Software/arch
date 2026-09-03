@@ -31,6 +31,21 @@ check_pkg() {
 	case "$KIND" in
 	binary)
 		[ -n "${TAG:-}" ] || fail "$name: binary pkg.conf missing TAG"
+		[ -n "${VERIFY:-}" ] || fail "$name: binary pkg.conf missing VERIFY"
+		case "${VERIFY}" in
+		cosign)
+			[ -n "${COSIGN_PUB:-}" ] || fail "$name: VERIFY=cosign needs COSIGN_PUB"
+			[ -f "$ROOT/$COSIGN_PUB" ] || fail "$name: missing $COSIGN_PUB"
+			;;
+		slsa)
+			[ -n "${SLSA_PROVENANCE:-}" ] || fail "$name: VERIFY=slsa needs SLSA_PROVENANCE"
+			[ -n "${SLSA_SOURCE_URI:-}" ] || fail "$name: VERIFY=slsa needs SLSA_SOURCE_URI"
+			;;
+		none) ;;
+		*)
+			fail "$name: unknown VERIFY=${VERIFY}"
+			;;
+		esac
 		grep -q '# AUTO-SUMS-BEGIN' "$dir/PKGBUILD" || fail "$name: missing AUTO-SUMS markers"
 		grep -q "conflicts=('${CONFLICTS}')" "$dir/PKGBUILD" || fail "$name: conflicts mismatch"
 		;;
@@ -61,6 +76,14 @@ log "==> repo.conf"
 log "==> pacman snippet"
 [ -f "$ROOT/conf/pacman-quad4.conf" ] || fail "missing conf/pacman-quad4.conf"
 grep -q "^\\[${REPO_NAME}\\]" "$ROOT/conf/pacman-quad4.conf" || fail "pacman snippet missing [$REPO_NAME]"
+
+log "==> trust pins"
+[ -n "${COSIGN_VERSION:-}" ] || fail "ci-pins.env missing COSIGN_VERSION"
+[ -n "${COSIGN_SHA256:-}" ] || fail "ci-pins.env missing COSIGN_SHA256"
+[ -n "${SLSA_VERIFIER_VERSION:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_VERSION"
+[ -n "${SLSA_VERIFIER_SHA256:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_SHA256"
+[ -f "$ROOT/keys/upstream/reticulum-go.cosign.pub" ] || fail "missing keys/upstream/reticulum-go.cosign.pub"
+[ -f "$ROOT/keys/upstream/meshchatx.cosign.pub" ] || fail "missing keys/upstream/meshchatx.cosign.pub"
 
 if command -v shellcheck >/dev/null 2>&1; then
 	log "==> shellcheck"
