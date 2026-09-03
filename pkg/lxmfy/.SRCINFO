@@ -10,6 +10,7 @@ pkgbase = lxmfy
 	makedepends = python-installer
 	makedepends = python-wheel
 	makedepends = python-setuptools
+	makedepends = python-poetry-core
 	depends = python
 	depends = rns
 	depends = lxmf

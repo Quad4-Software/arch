@@ -69,7 +69,12 @@ build_one() {
 			export CARCH="$arch"
 			export PACKAGER
 			export PKGDEST="$outdir"
-			makepkg -f --noconfirm --skippgpcheck --cleanbuild
+			# Python runtime depends may be Quad4 packages not yet installed.
+			if [ "$KIND" = "python" ]; then
+				makepkg -df --noconfirm --skippgpcheck --cleanbuild
+			else
+				makepkg -f --noconfirm --skippgpcheck --cleanbuild
+			fi
 		)
 	fi
 }

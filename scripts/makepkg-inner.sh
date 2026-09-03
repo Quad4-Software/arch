@@ -9,12 +9,18 @@ KIND="${KIND:?}"
 PACKAGER="${PACKAGER:-Quad4.io <ivan@quad4.io>}"
 
 pacman -Syu --noconfirm --needed base-devel git sudo
+MAKEPKG_FLAGS='-sf --noconfirm --skippgpcheck --cleanbuild'
 case "$KIND" in
 git)
 	pacman -S --noconfirm --needed git go
 	;;
 python)
-	pacman -S --noconfirm --needed python python-build python-installer python-wheel python-setuptools
+	# Runtime depends may be other Quad4 packages not in official repos.
+	# Install build backends here and skip pacman dep resolution.
+	pacman -S --noconfirm --needed \
+		python python-build python-installer python-wheel python-setuptools \
+		python-hatchling python-poetry-core
+	MAKEPKG_FLAGS='-df --noconfirm --skippgpcheck --cleanbuild'
 	;;
 esac
 
@@ -28,12 +34,13 @@ rm -rf /home/builder/pkg
 cp -a "/src/pkg/${PKG_NAME}" /home/builder/pkg
 chown -R builder:builder /home/builder /out
 
-cat >/home/builder/run.sh <<'INNER'
+cat >/home/builder/run.sh <<INNER
 set -eu
 cd /home/builder/pkg
 export PKGDEST=/out
 export SRCDEST=/home/builder/src
-makepkg -sf --noconfirm --skippgpcheck --cleanbuild
+# shellcheck disable=SC2086
+makepkg ${MAKEPKG_FLAGS}
 INNER
 chown builder:builder /home/builder/run.sh
 chmod 755 /home/builder/run.sh
