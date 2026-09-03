@@ -1,0 +1,21 @@
+pkgbase = lxmfy
+	pkgdesc = LXMF bot framework for the Reticulum Network
+	pkgver = 2.0.3
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/LXMFy
+	install = lxmfy.install
+	arch = any
+	license = 0BSD
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-wheel
+	makedepends = python-setuptools
+	depends = python
+	depends = rns
+	depends = lxmf
+	depends = python-cbor2
+	options = !strip
+	source = https://files.pythonhosted.org/packages/d9/6c/5ce1f9c70d2c0f9446513fe9fceafd15d22ea41aa10acf5b48f8b7478c44/lxmfy-2.0.3.tar.gz
+	sha256sums = f8029d60e518c5d3609990e6d3270ad9d0ac73400e09097a9bc588f66718ce5b
+
+pkgname = lxmfy

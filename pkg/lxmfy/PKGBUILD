@@ -1,0 +1,26 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=lxmfy
+pkgver=2.0.3
+pkgrel=1
+pkgdesc='LXMF bot framework for the Reticulum Network'
+arch=('any')
+url='https://github.com/Quad4-Software/LXMFy'
+license=('0BSD')
+depends=('python' 'rns' 'lxmf' 'python-cbor2')
+makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
+options=('!strip')
+install=lxmfy.install
+source=("https://files.pythonhosted.org/packages/d9/6c/5ce1f9c70d2c0f9446513fe9fceafd15d22ea41aa10acf5b48f8b7478c44/lxmfy-2.0.3.tar.gz")
+# AUTO-SUMS-BEGIN
+sha256sums=('f8029d60e518c5d3609990e6d3270ad9d0ac73400e09097a9bc588f66718ce5b')
+# AUTO-SUMS-END
+
+build() {
+	cd "$srcdir/lxmfy-2.0.3"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$srcdir/lxmfy-2.0.3"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

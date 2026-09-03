@@ -13,6 +13,9 @@ case "$KIND" in
 git)
 	pacman -S --noconfirm --needed git go
 	;;
+python)
+	pacman -S --noconfirm --needed python python-build python-installer python-wheel python-setuptools
+	;;
 esac
 
 if ! id -u builder >/dev/null 2>&1; then

@@ -65,6 +65,34 @@ jobs:
             arch: aarch64
           - package: meshchatx-git
             arch: x86_64
+          - package: renbrowser
+            arch: x86_64
+          - package: renbrowser
+            arch: aarch64
+          - package: gorrcd
+            arch: x86_64
+          - package: gorrcd
+            arch: aarch64
+          - package: gorrcd
+            arch: armv7h
+          - package: golxmd
+            arch: x86_64
+          - package: golxmd
+            arch: aarch64
+          - package: golxmd
+            arch: armv7h
+          - package: rns
+            arch: x86_64
+          - package: lxmf
+            arch: x86_64
+          - package: nomadnet
+            arch: x86_64
+          - package: lxmfy
+            arch: x86_64
+          - package: rns-page-node
+            arch: x86_64
+          - package: pip-rns
+            arch: x86_64
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -129,6 +157,12 @@ jobs:
               *-x86_64.pkg.tar.zst) dest=out/x86_64 ;;
               *-aarch64.pkg.tar.zst) dest=out/aarch64 ;;
               *-armv7h.pkg.tar.zst) dest=out/armv7h ;;
+              *-any.pkg.tar.zst)
+                cp -a "$f" out/x86_64/
+                cp -a "$f" out/aarch64/
+                cp -a "$f" out/armv7h/
+                continue
+                ;;
               *) echo "unrecognized package arch: $base" >&2; exit 1 ;;
               esac
               cp -a "$f" "$dest/"

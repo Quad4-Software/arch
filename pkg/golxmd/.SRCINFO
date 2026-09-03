@@ -1,0 +1,21 @@
+pkgbase = golxmd
+	pkgdesc = Go LXMF daemon from reticulum-go-protocols
+	pkgver = 2026.08.23.4dd358b
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/reticulum-go-protocols
+	install = golxmd.install
+	arch = x86_64
+	arch = aarch64
+	arch = armv7h
+	license = 0BSD
+	provides = golxmd
+	options = !strip
+	options = !debug
+	source_x86_64 = golxmd-linux-amd64-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/golxmd-linux-amd64
+	sha256sums_x86_64 = c0c5aa0463143dd3ed041f38251c5f067a65802a67a807f4b5830002d36f93a4
+	source_aarch64 = golxmd-linux-arm64-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/golxmd-linux-arm64
+	sha256sums_aarch64 = edefb7a76ae99dba79f909ee91592c6704d8ca88a2b5c425695cdc933ea70376
+	source_armv7h = golxmd-linux-armv6-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/golxmd-linux-armv6
+	sha256sums_armv7h = 132769a4032614eb83a36135fada5197af161fdd03b3bd5b0ac8e7143c4438ba
+
+pkgname = golxmd

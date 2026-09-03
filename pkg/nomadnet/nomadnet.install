@@ -1,0 +1,12 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'nomadnet is installed.'
+}
+
+post_upgrade() {
+	true
+}
+
+post_remove() {
+	true
+}

@@ -47,10 +47,15 @@ bump_binary_packages() {
 	for name in $(list_packages); do
 		load_pkg_conf "$name"
 		[ "$KIND" = "binary" ] || continue
+		[ "${SKIP_AUTO_BUMP:-}" = "1" ] && continue
 		[ -n "${TAG:-}" ] || die "$name: binary pkg.conf missing TAG"
 		[ -n "${VERIFY:-}" ] || die "$name: binary pkg.conf missing VERIFY"
 
-		latest="$(gh api "repos/${GITHUB}/releases/latest" --jq '.tag_name')"
+		if [ "${INCLUDE_PRERELEASE:-}" = "1" ]; then
+			latest="$(gh release list --repo "$GITHUB" --limit 1 --json tagName --jq '.[0].tagName')"
+		else
+			latest="$(gh api "repos/${GITHUB}/releases/latest" --jq '.tag_name')"
+		fi
 		[ -n "$latest" ] || die "$name: empty latest release tag from ${GITHUB}"
 
 		if [ "$latest" = "$TAG" ]; then
@@ -62,6 +67,29 @@ bump_binary_packages() {
 		sh "$ROOT/scripts/bump-binary.sh" "$name" "$latest"
 		CHANGED=1
 		append_summary "${name} ${TAG} -> ${latest}"
+	done
+}
+
+bump_python_packages() {
+	for name in $(list_packages); do
+		load_pkg_conf "$name"
+		[ "$KIND" = "python" ] || continue
+		[ "${SKIP_AUTO_BUMP:-}" = "1" ] && continue
+		[ -n "${PYPI_NAME:-}" ] || die "$name: python pkg.conf missing PYPI_NAME"
+		[ -n "${VERSION:-}" ] || die "$name: python pkg.conf missing VERSION"
+
+		latest="$(curl -fsSL "https://pypi.org/pypi/${PYPI_NAME}/json" | python3 -c 'import sys,json; print(json.load(sys.stdin)["info"]["version"])')"
+		[ -n "$latest" ] || die "$name: empty PyPI version for ${PYPI_NAME}"
+
+		if [ "$latest" = "$VERSION" ]; then
+			log "$name: already at $VERSION"
+			continue
+		fi
+
+		log "$name: $VERSION -> $latest"
+		sh "$ROOT/scripts/bump-pypi.sh" "$name" "$latest"
+		CHANGED=1
+		append_summary "${name} ${VERSION} -> ${latest}"
 	done
 }
 
@@ -159,6 +187,9 @@ PY
 
 log "==> binary packages"
 bump_binary_packages
+
+log "==> python packages"
+bump_python_packages
 
 log "==> archlinux image"
 bump_arch_image

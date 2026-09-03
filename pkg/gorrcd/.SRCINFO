@@ -1,0 +1,21 @@
+pkgbase = gorrcd
+	pkgdesc = Go RRC hub daemon from reticulum-go-protocols
+	pkgver = 2026.08.23.4dd358b
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/reticulum-go-protocols
+	install = gorrcd.install
+	arch = x86_64
+	arch = aarch64
+	arch = armv7h
+	license = 0BSD
+	provides = gorrcd
+	options = !strip
+	options = !debug
+	source_x86_64 = gorrcd-linux-amd64-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/gorrcd-linux-amd64
+	sha256sums_x86_64 = d9fbc44d812d84449f242972704ae2d99458a936071946414f5545ab4aecf506
+	source_aarch64 = gorrcd-linux-arm64-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/gorrcd-linux-arm64
+	sha256sums_aarch64 = a3d67930cb1a07ce27d238bdc7c7c88287bd45b1decb6a08b7703b4c28df1e15
+	source_armv7h = gorrcd-linux-armv6-2026.08.23.4dd358b::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/preview-2026.08.23-4dd358b/gorrcd-linux-armv6
+	sha256sums_armv7h = 599b404a0245244945639b11f506e90a2301daf754c0c20dfb076f71b85e7499
+
+pkgname = gorrcd

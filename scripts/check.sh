@@ -41,18 +41,29 @@ check_pkg() {
 			[ -n "${SLSA_PROVENANCE:-}" ] || fail "$name: VERIFY=slsa needs SLSA_PROVENANCE"
 			[ -n "${SLSA_SOURCE_URI:-}" ] || fail "$name: VERIFY=slsa needs SLSA_SOURCE_URI"
 			;;
+		sha256sums)
+			[ -n "${SHA256SUMS:-}" ] || fail "$name: VERIFY=sha256sums needs SHA256SUMS"
+			;;
 		none) ;;
 		*)
 			fail "$name: unknown VERIFY=${VERIFY}"
 			;;
 		esac
 		grep -q '# AUTO-SUMS-BEGIN' "$dir/PKGBUILD" || fail "$name: missing AUTO-SUMS markers"
-		grep -q "conflicts=('${CONFLICTS}')" "$dir/PKGBUILD" || fail "$name: conflicts mismatch"
+		if [ -n "${CONFLICTS:-}" ]; then
+			grep -q "conflicts=('${CONFLICTS}')" "$dir/PKGBUILD" || fail "$name: conflicts mismatch"
+		fi
 		;;
 	git)
 		[ -n "${BRANCH:-}" ] || fail "$name: git pkg.conf missing BRANCH"
 		grep -q "sha256sums=('SKIP')" "$dir/PKGBUILD" || fail "$name: git PKGBUILD must SKIP checksums"
 		grep -q '^pkgver()' "$dir/PKGBUILD" || fail "$name: git PKGBUILD missing pkgver()"
+		;;
+	python)
+		[ -n "${PYPI_NAME:-}" ] || fail "$name: python pkg.conf missing PYPI_NAME"
+		[ -n "${VERSION:-}" ] || fail "$name: python pkg.conf missing VERSION"
+		grep -q '# AUTO-SUMS-BEGIN' "$dir/PKGBUILD" || fail "$name: missing AUTO-SUMS markers"
+		grep -q "arch=('any')" "$dir/PKGBUILD" || fail "$name: python PKGBUILD must be arch=any"
 		;;
 	*)
 		fail "$name: unknown KIND=$KIND"

@@ -58,13 +58,30 @@ load_pkg_conf() {
 	COSIGN_PUB=
 	SLSA_PROVENANCE=
 	SLSA_SOURCE_URI=
+	INCLUDE_PRERELEASE=
+	PYPI_NAME=
+	VERSION=
+	SHA256SUMS=
+	SKIP_AUTO_BUMP=
 	# shellcheck disable=SC1090
 	. "$_conf"
 	: "${KIND:?${_pkg} pkg.conf missing KIND}"
-	: "${GITHUB:?${_pkg} pkg.conf missing GITHUB}"
+	case "$KIND" in
+	binary | git)
+		: "${GITHUB:?${_pkg} pkg.conf missing GITHUB}"
+		;;
+	python)
+		: "${PYPI_NAME:?${_pkg} pkg.conf missing PYPI_NAME}"
+		: "${VERSION:?${_pkg} pkg.conf missing VERSION}"
+		;;
+	*)
+		die "${_pkg}: unknown KIND=$KIND"
+		;;
+	esac
 	export KIND GITHUB TAG BRANCH SOURCE_TARBALL CONFLICTS PROVIDES
 	export ASSET_x86_64 ASSET_aarch64 ASSET_armv7h ARCHES
 	export VERIFY COSIGN_PUB SLSA_PROVENANCE SLSA_SOURCE_URI
+	export INCLUDE_PRERELEASE PYPI_NAME VERSION SHA256SUMS SKIP_AUTO_BUMP
 }
 
 list_packages() {

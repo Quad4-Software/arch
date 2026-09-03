@@ -17,7 +17,7 @@ Then:
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S reticulum-go meshchatx
+sudo pacman -S reticulum-go meshchatx renbrowser rns lxmf nomadnet
 ```
 
 The first Server is [arch.quad4.io](https://arch.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
@@ -32,8 +32,17 @@ Packages are unsigned until a key is placed at `keys/quad4.gpg`. Keep `SigLevel 
 | `reticulum-go-git` | Reticulum-Go built from `master` |
 | `meshchatx` | MeshChatX AppImage (`x86_64`, `aarch64`) |
 | `meshchatx-git` | MeshChatX built from `master` |
+| `renbrowser` | Ren Browser for Reticulum (`x86_64`, `aarch64`) |
+| `gorrcd` | Go RRC hub daemon from reticulum-go-protocols |
+| `golxmd` | Go LXMF daemon from reticulum-go-protocols |
+| `rns` | Python Reticulum Network Stack (PyPI, external) |
+| `lxmf` | Python LXMF (PyPI, external) |
+| `nomadnet` | Nomad Network client (PyPI, external) |
+| `lxmfy` | LXMF bot framework (PyPI) |
+| `rns-page-node` | RNS page/file node (PyPI) |
+| `pip-rns` | Install Python packages from Reticulum remotes (PyPI) |
 
-`reticulum-go` conflicts with `reticulum-go-git`. `meshchatx` conflicts with `meshchatx-git`.
+`reticulum-go` conflicts with `reticulum-go-git`. `meshchatx` conflicts with `meshchatx-git`. `rns`, `lxmf`, and `nomadnet` are third-party Markqvist packages mirrored for convenience.
 
 ## Development
 

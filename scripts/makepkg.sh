@@ -88,6 +88,8 @@ for name in $pkgs; do
 		arches="$ARCHES"
 	elif [ "$KIND" = "binary" ]; then
 		arches="x86_64 aarch64 armv7h"
+	elif [ "$KIND" = "python" ]; then
+		arches="x86_64"
 	else
 		arches="$host_arch"
 	fi

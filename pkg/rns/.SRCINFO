@@ -1,0 +1,20 @@
+pkgbase = rns
+	pkgdesc = Reticulum Network Stack (Python)
+	pkgver = 1.5.2
+	pkgrel = 1
+	url = https://reticulum.network/
+	install = rns.install
+	arch = any
+	license = custom:Reticulum
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-wheel
+	makedepends = python-setuptools
+	depends = python
+	depends = python-cryptography
+	depends = python-pyserial
+	options = !strip
+	source = https://files.pythonhosted.org/packages/7e/fb/d7b0b67c0e369b8533fe14688cb2b65bff21c669b0c776759015ad3d1830/rns-1.5.2.tar.gz
+	sha256sums = a7f8f0d445312fee1c4ade41178f5224fe7af8bd790a79d148696659d81cc862
+
+pkgname = rns

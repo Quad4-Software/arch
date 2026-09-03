@@ -1,0 +1,26 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=@NAME@
+pkgver=@VERSION@
+pkgrel=1
+pkgdesc='@DESC@'
+arch=('any')
+url='@URL@'
+license=(@LICENSE@)
+depends=(@DEPENDS@)
+makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
+options=('!strip')
+install=@NAME@.install
+source=("@SDIST_URL@")
+# AUTO-SUMS-BEGIN
+sha256sums=('@SHA256@')
+# AUTO-SUMS-END
+
+build() {
+	cd "$srcdir/@SDIST_DIR@"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$srcdir/@SDIST_DIR@"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

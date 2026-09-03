@@ -1,0 +1,12 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'pip-rns is installed.'
+}
+
+post_upgrade() {
+	true
+}
+
+post_remove() {
+	true
+}

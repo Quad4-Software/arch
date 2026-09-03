@@ -1,0 +1,34 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=gorrcd
+pkgver=2026.08.23.4dd358b
+pkgrel=1
+pkgdesc='Go RRC hub daemon from reticulum-go-protocols'
+arch=('x86_64' 'aarch64' 'armv7h')
+url='https://github.com/Quad4-Software/reticulum-go-protocols'
+license=('0BSD')
+provides=('gorrcd')
+options=('!strip' '!debug')
+install=gorrcd.install
+_tag=preview-2026.08.23-4dd358b
+source_x86_64=("gorrcd-linux-amd64-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/gorrcd-linux-amd64")
+source_aarch64=("gorrcd-linux-arm64-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/gorrcd-linux-arm64")
+source_armv7h=("gorrcd-linux-armv6-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/gorrcd-linux-armv6")
+# AUTO-SUMS-BEGIN
+sha256sums_x86_64=('d9fbc44d812d84449f242972704ae2d99458a936071946414f5545ab4aecf506')
+sha256sums_aarch64=('a3d67930cb1a07ce27d238bdc7c7c88287bd45b1decb6a08b7703b4c28df1e15')
+sha256sums_armv7h=('599b404a0245244945639b11f506e90a2301daf754c0c20dfb076f71b85e7499')
+# AUTO-SUMS-END
+
+package() {
+	local binfile
+	case "$CARCH" in
+	x86_64) binfile="gorrcd-linux-amd64-${pkgver}" ;;
+	aarch64) binfile="gorrcd-linux-arm64-${pkgver}" ;;
+	armv7h) binfile="gorrcd-linux-armv6-${pkgver}" ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	install -Dm755 "$srcdir/$binfile" "$pkgdir/usr/bin/gorrcd"
+}

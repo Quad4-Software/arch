@@ -47,7 +47,7 @@ expand_ver() {
 ensure_verify_tools() {
 	case "${VERIFY:-}" in
 	cosign | slsa) ;;
-	"" | none)
+	"" | none | sha256sums)
 		return 0
 		;;
 	*)
@@ -97,6 +97,18 @@ verify_blob() {
 			--provenance "$prov_path" \
 			--source-uri "$SLSA_SOURCE_URI" \
 			--source-tag "$TAG"
+		;;
+	sha256sums)
+		[ -n "${SHA256SUMS:-}" ] || die "$NAME: VERIFY=sha256sums needs SHA256SUMS"
+		sums_path="$WORKDIR/SHA256SUMS.txt"
+		if [ ! -f "$sums_path" ]; then
+			download "${base}/$(expand_ver "$SHA256SUMS")" "$sums_path"
+		fi
+		got="$(sum_of "$blob")"
+		want="$(awk -v f="$asset_name" '$2 == f { print $1; exit }' "$sums_path")"
+		[ -n "$want" ] || die "$NAME: $asset_name missing from $SHA256SUMS"
+		[ "$got" = "$want" ] || die "$NAME: sha256 mismatch for $asset_name got=$got want=$want"
+		log "sha256sums ok for $asset_name"
 		;;
 	*)
 		die "$NAME: unknown VERIFY=${VERIFY}"

@@ -12,7 +12,7 @@ on:
       - master
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -49,17 +49,25 @@ jobs:
         include:
           - package: reticulum-go
             arch: x86_64
-          - package: reticulum-go
-            arch: aarch64
-          - package: reticulum-go
-            arch: armv7h
-          - package: reticulum-go-git
-            arch: x86_64
           - package: meshchatx
             arch: x86_64
-          - package: meshchatx
-            arch: aarch64
-          - package: meshchatx-git
+          - package: renbrowser
+            arch: x86_64
+          - package: gorrcd
+            arch: x86_64
+          - package: golxmd
+            arch: x86_64
+          - package: rns
+            arch: x86_64
+          - package: lxmf
+            arch: x86_64
+          - package: nomadnet
+            arch: x86_64
+          - package: lxmfy
+            arch: x86_64
+          - package: rns-page-node
+            arch: x86_64
+          - package: pip-rns
             arch: x86_64
     steps:
       - name: Checkout
