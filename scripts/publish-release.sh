@@ -1,6 +1,7 @@
 #!/bin/sh
 # Upload per-arch repo trees to rolling GitHub Releases named repo-\$arch.
 # Recreates each release because published releases may be immutable.
+# Deletes the git tag too so the same rolling tag name can be reused.
 
 set -eu
 
@@ -18,6 +19,19 @@ export GH_TOKEN
 PREFIX="${RELEASE_PREFIX:-repo}"
 TARGET="${GITHUB_SHA:-${GITHUB_REF_NAME:-master}}"
 
+remove_rolling_tag() {
+	tag="$1"
+	if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+		log "removing release $tag for republish"
+		gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag
+	fi
+	# Immutable releases can leave a tag that blocks recreate even after delete.
+	if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${tag}" >/dev/null 2>&1; then
+		log "removing leftover tag $tag"
+		gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag}" >/dev/null
+	fi
+}
+
 upload_arch() {
 	arch="$1"
 	dir="$ROOT/repo/$arch"
@@ -30,20 +44,19 @@ upload_arch() {
 	assets="$(find "$dir" -maxdepth 1 -type f ! -name '*.old' | LC_ALL=C sort)"
 	[ -n "$assets" ] || die "no assets under repo/$arch"
 
-	# Published releases can be immutable. Delete and recreate instead of clobber.
-	if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-		log "removing release $tag for republish"
-		gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes
-	fi
+	remove_rolling_tag "$tag"
 
 	log "creating release $tag"
+	# Draft first so assets can upload before immutability locks the release.
 	# shellcheck disable=SC2086
 	gh release create "$tag" $assets \
 		--repo "$GITHUB_REPOSITORY" \
 		--target "$TARGET" \
 		--title "$tag" \
 		--notes-file "$notes" \
-		--latest=false
+		--latest=false \
+		--draft
+	gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false
 	rm -f "$notes"
 }
 

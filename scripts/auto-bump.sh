@@ -139,7 +139,9 @@ PY
 
 	new_tag="${parsed%% *}"
 	new_digest="${parsed#* }"
-	[ -n "$new_tag" ] && [ -n "$new_digest" ] || die "failed to parse Arch image pin"
+	if [ -z "$new_tag" ] || [ -z "$new_digest" ]; then
+		die "failed to parse Arch image pin"
+	fi
 
 	verify_arch_digest "$new_tag" "$new_digest"
 
