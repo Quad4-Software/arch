@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=reticulum-go
-pkgver=1.0.1
+pkgver=1.1.1
 pkgrel=1
 pkgdesc='Reticulum network stack (Go), prebuilt release binary'
 arch=('x86_64' 'aarch64' 'armv7h')
@@ -17,10 +17,10 @@ source_x86_64=("reticulum-go-linux-amd64-${pkgver}::https://github.com/Quad4-Sof
 source_aarch64=("reticulum-go-linux-arm64-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-arm64")
 source_armv7h=("reticulum-go-linux-arm-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-arm")
 # AUTO-SUMS-BEGIN
-sha256sums=('6a1f75d8011d258546d504f4a64b23f1d9dd3e07cc8655c92b5fba5a21bac0c6')
-sha256sums_x86_64=('b86e2b8888a4b520c5e6538a35a69922fa5ac9d8c69504a486236c061cbd716e')
-sha256sums_aarch64=('aeffa840f84b9e9709918544123dec79ab12668d783635a72e24e4b4f45e5852')
-sha256sums_armv7h=('75b0be9164a5b87c29af832df2430d3199ba51a5fd49e17bb7ead41a51d04326')
+sha256sums=('e3f96d060af3239a8b2e369bbf08956369bb557518591ed4683c98f03a652124')
+sha256sums_x86_64=('da87f69abe345fdf28a7d485aad69a0276a96ba0e86d1b9c1f415aefc13042dd')
+sha256sums_aarch64=('878440210e4eda66a4e331dec9516253c85249468a512b8750a67b23d17c7f8e')
+sha256sums_armv7h=('7d1ebb64ab6e266f658343f708f6136640b3a21540342aa0eba77bc61ac02244')
 # AUTO-SUMS-END
 
 package() {

@@ -2,7 +2,7 @@
 #   actions/checkout@v7.0.1                     3d3c42e5aac5ba805825da76410c181273ba90b1
 #   actions/configure-pages@v6.0.0              45bfe0192ca1faeb007ade9deae92b16b8254a0d
 #   actions/upload-pages-artifact@v5.0.0        fc324d3547104276b827a68afc52ff2a11cc49c9
-#   actions/deploy-pages@v5.0.0                 cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+#   actions/deploy-pages@v5.0.1                 368f82528645a54fb793d4d04e342629a3f51346
 #
 # Deploys the Pages site so GitHub can verify arch.quad4.io.
 # Package files are added later by the Publish repo workflow.
@@ -60,7 +60,7 @@ jobs:
 
       - name: Deploy Pages
         id: deploy
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
       - name: Attach custom domain
         env:
