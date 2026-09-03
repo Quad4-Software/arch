@@ -1,0 +1,87 @@
+# Pinned first-party actions (bump tag and SHA together when upgrading):
+#   actions/checkout@v7.0.1                     3d3c42e5aac5ba805825da76410c181273ba90b1
+#
+# Bumps binary package TAGs and the Arch docker image pin when upstream is newer.
+# Opens (or updates) a PR and enables auto-merge when CI is green.
+#
+# Set repository secret AUTO_BUMP_TOKEN (contents + pull-requests) so the PR
+# is created with a non-GITHUB_TOKEN identity and CI runs on it.
+name: Auto bump
+
+on:
+  schedule:
+    - cron: "12 6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - quad4-bump
+
+concurrency:
+  group: auto-bump
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    name: Detect and PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
+          persist-credentials: true
+
+      - name: Auto bump
+        id: bump
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
+        run: sh scripts/auto-bump.sh
+
+      - name: Create or update PR
+        if: steps.bump.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
+          SUMMARY: ${{ steps.bump.outputs.summary }}
+          HAS_AUTO_BUMP_TOKEN: ${{ secrets.AUTO_BUMP_TOKEN != '' }}
+        run: |
+          set -eu
+          branch="chore/auto-bump"
+          title="chore: ${SUMMARY}"
+          body="$(printf '%s\n\n%s\n' \
+            "Automated bump from the Auto bump workflow." \
+            "- ${SUMMARY}")"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin "$branch" 2>/dev/null || true
+          git checkout -B "$branch"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing staged after bump"
+            exit 0
+          fi
+          git commit -m "$title"
+          git push -u origin "$branch" --force-with-lease
+
+          if gh pr view "$branch" --json number --jq .number >/dev/null 2>&1; then
+            pr="$(gh pr view "$branch" --json number --jq .number)"
+            gh pr edit "$pr" --title "$title" --body "$body"
+            echo "updated PR #$pr"
+          else
+            gh pr create --base master --head "$branch" --title "$title" --body "$body"
+            pr="$(gh pr view "$branch" --json number --jq .number)"
+            echo "opened PR #$pr"
+          fi
+
+          if ! gh pr merge "$pr" --auto --squash; then
+            echo "auto-merge not enabled yet (repo setting or checks). PR #$pr is open."
+            if [ "$HAS_AUTO_BUMP_TOKEN" != "true" ]; then
+              echo "Note: set AUTO_BUMP_TOKEN so CI runs on this PR (GITHUB_TOKEN pushes skip pull_request workflows)."
+            fi
+          fi

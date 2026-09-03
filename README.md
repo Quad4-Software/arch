@@ -53,6 +53,16 @@ sh scripts/bump-binary.sh reticulum-go v1.1.1
 sh scripts/bump-binary.sh meshchatx v4.8.5
 ```
 
+Or let CI do it. The Auto bump workflow runs daily, on `workflow_dispatch`, and on `repository_dispatch` type `quad4-bump`. It updates binary package TAGs and the Arch image pin in `conf/ci-pins.env`, opens a PR on `chore/auto-bump`, and enables auto-merge when CI is green.
+
+Set repository secret `AUTO_BUMP_TOKEN` (classic PAT or fine-grained token with Contents and Pull requests write) so the PR is not opened with `GITHUB_TOKEN` (otherwise `pull_request` workflows do not run). Also enable Allow auto-merge in repo settings.
+
+Check for bumps locally:
+
+```bash
+sh scripts/auto-bump.sh
+```
+
 Scaffold a new package:
 
 ```bash
@@ -62,10 +72,14 @@ sh scripts/new-pkg.sh other-tool-git --kind git --github Quad4-Software/other-to
 
 Edit `package()` in the new PKGBUILD, then add matrix rows in `.github/workflows/ci.yml` and `publish.yml`.
 
-Rebuild from another Quad4 repository (needs `actions: write` on this repo):
+From another Quad4 repository (needs `actions: write` on this repo):
 
 ```bash
+# Rebuild current package versions
 gh api repos/Quad4-Software/arch/dispatches -f event_type=quad4-rebuild
+
+# Check for newer upstream releases and open a bump PR
+gh api repos/Quad4-Software/arch/dispatches -f event_type=quad4-bump
 ```
 
 ## License
