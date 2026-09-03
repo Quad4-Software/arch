@@ -33,12 +33,20 @@ enable)
 	fi
 	;;
 domain)
-	log "Setting Pages custom domain ${cname}"
+	# GITHUB_TOKEN often cannot PUT Pages settings (403). Skip when already set.
+	current="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.cname // empty' 2>/dev/null || true)"
+	if [ "$current" = "$cname" ]; then
+		log "Pages custom domain already ${cname}"
+	else
+		log "Setting Pages custom domain ${cname}"
+		if ! gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+			-f build_type=workflow \
+			-f cname="${cname}"; then
+			die "cannot set Pages custom domain to ${cname} (needs repo admin). Set it in Settings > Pages"
+		fi
+	fi
 	gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
-		-f build_type=workflow \
-		-f cname="${cname}"
-	gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
-		-F https_enforced=true || true
+		-F https_enforced=true >/dev/null 2>&1 || true
 	;;
 *)
 	die "usage: pages-github.sh enable|domain"

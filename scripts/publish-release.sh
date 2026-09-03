@@ -1,5 +1,6 @@
 #!/bin/sh
 # Upload per-arch repo trees to rolling GitHub Releases named repo-\$arch.
+# Recreates each release because published releases may be immutable.
 
 set -eu
 
@@ -15,6 +16,7 @@ GH_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
 export GH_TOKEN
 
 PREFIX="${RELEASE_PREFIX:-repo}"
+TARGET="${GITHUB_SHA:-${GITHUB_REF_NAME:-master}}"
 
 upload_arch() {
 	arch="$1"
@@ -24,19 +26,25 @@ upload_arch() {
 	notes="$(mktemp)"
 	printf '%s\n' "Pacman database and packages for ${arch}." >"$notes"
 	printf '%s\n' "Server = https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}" >>"$notes"
+
+	assets="$(find "$dir" -maxdepth 1 -type f ! -name '*.old' | LC_ALL=C sort)"
+	[ -n "$assets" ] || die "no assets under repo/$arch"
+
+	# Published releases can be immutable. Delete and recreate instead of clobber.
 	if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-		log "updating release $tag"
-	else
-		log "creating release $tag"
-		gh release create "$tag" \
-			--repo "$GITHUB_REPOSITORY" \
-			--title "$tag" \
-			--notes-file "$notes" \
-			--latest=false
+		log "removing release $tag for republish"
+		gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes
 	fi
+
+	log "creating release $tag"
+	# shellcheck disable=SC2086
+	gh release create "$tag" $assets \
+		--repo "$GITHUB_REPOSITORY" \
+		--target "$TARGET" \
+		--title "$tag" \
+		--notes-file "$notes" \
+		--latest=false
 	rm -f "$notes"
-	# shellcheck disable=SC2046
-	gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber $(find "$dir" -maxdepth 1 -type f ! -name '*.old' | LC_ALL=C sort)
 }
 
 if [ $# -gt 0 ]; then

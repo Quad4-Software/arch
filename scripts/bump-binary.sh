@@ -12,11 +12,12 @@ ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
 load_repo_conf
 
 NAME="${1:-}"
-TAG="${2:-}"
+REQ_TAG="${2:-}"
 [ -n "$NAME" ] || die "usage: bump-binary.sh NAME TAG"
-[ -n "$TAG" ] || die "usage: bump-binary.sh NAME TAG"
+[ -n "$REQ_TAG" ] || die "usage: bump-binary.sh NAME TAG"
 
 load_pkg_conf "$NAME"
+TAG="$REQ_TAG"
 [ "$KIND" = "binary" ] || die "$NAME is not a binary package"
 need_cmd curl
 need_cmd sha256sum

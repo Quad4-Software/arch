@@ -50,7 +50,7 @@ Bump a binary package after an upstream release:
 
 ```bash
 sh scripts/bump-binary.sh reticulum-go v1.0.2
-sh scripts/bump-binary.sh meshchatx v4.8.2
+sh scripts/bump-binary.sh meshchatx v4.8.5
 ```
 
 Scaffold a new package:
