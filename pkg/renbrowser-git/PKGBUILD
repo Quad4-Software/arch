@@ -7,7 +7,7 @@ arch=('x86_64' 'aarch64')
 url='https://github.com/Quad4-Software/Ren-Browser'
 license=('MIT')
 depends=('gtk4' 'webkitgtk-6.0' 'hicolor-icon-theme')
-makedepends=('git' 'go' 'make' 'nodejs' 'pnpm' 'pkgconf')
+makedepends=('git' 'go' 'make' 'nodejs' 'npm' 'pkgconf')
 provides=('renbrowser')
 conflicts=('renbrowser-bin' 'renbrowser')
 options=('!lto' '!debug')
@@ -26,6 +26,16 @@ pkgver() {
 	fi
 }
 
+prepare() {
+	cd "$srcdir/Ren-Browser"
+	# Upstream pins pnpm via packageManager. Arch extra/pnpm is often behind.
+	local pmver
+	pmver="$(sed -n 's/.*"packageManager": *"pnpm@\([^"]*\)".*/\1/p' package.json | head -n1)"
+	[ -n "$pmver" ] || pmver='11.24.0'
+	mkdir -p "$srcdir/npm-global"
+	npm install -g --prefix "$srcdir/npm-global" "pnpm@${pmver}"
+}
+
 build() {
 	cd "$srcdir/Ren-Browser"
 	export CGO_ENABLED=1
@@ -34,8 +44,10 @@ build() {
 	export GOPATH="$srcdir/gopath"
 	export GOCACHE="$srcdir/gocache"
 	export GOMODCACHE="$srcdir/gomod"
+	export PATH="$srcdir/npm-global/bin:${PATH}"
+	export PNPM="$srcdir/npm-global/bin/pnpm"
 	mkdir -p "$GOPATH" "$GOCACHE" "$GOMODCACHE"
-	make build
+	make build PNPM="$PNPM"
 }
 
 package() {
