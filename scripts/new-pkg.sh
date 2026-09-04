@@ -4,6 +4,10 @@
 # Usage:
 #   new-pkg.sh NAME --kind binary --github OWNER/REPO --tag vX.Y.Z
 #   new-pkg.sh NAME --kind git --github OWNER/REPO [--branch master]
+#
+# Binary packages are stored as NAME-bin (appended if missing).
+# Git packages are stored as NAME-git (appended if missing).
+# Both provide NAME and conflict with each other.
 
 set -eu
 
@@ -23,6 +27,8 @@ usage() {
 Usage:
   new-pkg.sh NAME --kind binary --github OWNER/REPO --tag vX.Y.Z
   new-pkg.sh NAME --kind git --github OWNER/REPO [--branch master]
+
+Creates pkg/NAME-bin or pkg/NAME-git. NAME is the unversioned provide.
 EOF
 }
 
@@ -70,6 +76,25 @@ binary|git) ;;
 *) die "--kind must be binary or git" ;;
 esac
 echo "$NAME" | grep -Eq '^[a-z0-9][a-z0-9+._-]*$' || die "invalid package name: $NAME"
+
+BASE="$NAME"
+case "$KIND" in
+binary)
+	case "$NAME" in
+	*-bin) BASE="${NAME%-bin}" ;;
+	*-git) die "binary package name must not end with -git" ;;
+	*) NAME="${NAME}-bin" ;;
+	esac
+	;;
+git)
+	case "$NAME" in
+	*-git) BASE="${NAME%-git}" ;;
+	*-bin) die "git package name must not end with -bin" ;;
+	*) NAME="${NAME}-git" ;;
+	esac
+	;;
+esac
+
 [ ! -e "$ROOT/pkg/$NAME" ] || die "pkg/$NAME already exists"
 
 if [ "$KIND" = "binary" ]; then
@@ -83,16 +108,18 @@ binary)
 KIND=binary
 GITHUB=$GITHUB
 TAG=$TAG
-ASSET_x86_64=${NAME}-linux-amd64
-ASSET_aarch64=${NAME}-linux-arm64
-ASSET_armv7h=${NAME}-linux-arm
+ASSET_x86_64=${BASE}-linux-amd64
+ASSET_aarch64=${BASE}-linux-arm64
+ASSET_armv7h=${BASE}-linux-arm
 SOURCE_TARBALL=1
-CONFLICTS=${NAME}-git
-PROVIDES=$NAME
+CONFLICTS="${BASE}-git"
+PROVIDES="$BASE"
+REPLACES="$BASE"
+VERIFY=none
 EOF
-	sed -e "s/@NAME@/${NAME}/g" -e "s/@GITHUB@/${GITHUB}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s/@GITHUB@/${GITHUB}/g" \
 		"$ROOT/scripts/templates/PKGBUILD.binary" >"$ROOT/pkg/$NAME/PKGBUILD"
-	sed -e "s/@NAME@/${NAME}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" \
 		"$ROOT/scripts/templates/install.binary" >"$ROOT/pkg/$NAME/${NAME}.install"
 	log "Created pkg/$NAME (binary). Edit ASSET_* in pkg.conf then run: scripts/bump-binary.sh $NAME $TAG"
 	;;
@@ -101,12 +128,12 @@ git)
 KIND=git
 GITHUB=$GITHUB
 BRANCH=$BRANCH
-CONFLICTS=$NAME
-PROVIDES=$NAME
+CONFLICTS="${BASE}-bin ${BASE}"
+PROVIDES="$BASE"
 EOF
-	sed -e "s/@NAME@/${NAME}/g" -e "s/@GITHUB@/${GITHUB}/g" -e "s/@BRANCH@/${BRANCH}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s/@GITHUB@/${GITHUB}/g" -e "s/@BRANCH@/${BRANCH}/g" \
 		"$ROOT/scripts/templates/PKGBUILD.git" >"$ROOT/pkg/$NAME/PKGBUILD"
-	sed -e "s/@NAME@/${NAME}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" \
 		"$ROOT/scripts/templates/install.git" >"$ROOT/pkg/$NAME/${NAME}.install"
 	log "Created pkg/$NAME (git). Adjust PKGBUILD build() for that project."
 	;;

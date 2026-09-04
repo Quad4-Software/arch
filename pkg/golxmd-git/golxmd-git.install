@@ -1,0 +1,13 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'golxmd-git is installed.'
+	printf '%s\n' 'Run: golxmd --help'
+}
+
+post_upgrade() {
+	:
+}
+
+post_remove() {
+	:
+}

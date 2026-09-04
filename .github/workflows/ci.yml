@@ -47,15 +47,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - package: reticulum-go
+          - package: reticulum-go-bin
             arch: x86_64
-          - package: meshchatx
+          - package: meshchatx-bin
             arch: x86_64
-          - package: renbrowser
+          - package: renbrowser-bin
             arch: x86_64
-          - package: gorrcd
+          - package: gorrcd-bin
             arch: x86_64
-          - package: golxmd
+          - package: golxmd-bin
+            arch: x86_64
+          - package: gorrcd-git
             arch: x86_64
           - package: rns
             arch: x86_64

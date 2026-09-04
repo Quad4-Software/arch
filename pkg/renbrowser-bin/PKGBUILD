@@ -1,5 +1,5 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
-pkgname=renbrowser
+pkgname=renbrowser-bin
 pkgver=0.3.0
 pkgrel=1
 pkgdesc='Modern browser for the Reticulum Network (Reticulum-Go)'
@@ -7,8 +7,10 @@ arch=('x86_64' 'aarch64')
 url='https://github.com/Quad4-Software/Ren-Browser'
 license=('MIT')
 provides=('renbrowser')
+conflicts=('renbrowser-git')
+replaces=('renbrowser')
 options=('!strip' '!debug')
-install=renbrowser.install
+install=renbrowser-bin.install
 source=("https://github.com/Quad4-Software/Ren-Browser/archive/refs/tags/v${pkgver}.tar.gz")
 source_x86_64=("renbrowser-linux-amd64-${pkgver}::https://github.com/Quad4-Software/Ren-Browser/releases/download/v${pkgver}/renbrowser-linux-amd64")
 source_aarch64=("renbrowser-linux-arm64-${pkgver}::https://github.com/Quad4-Software/Ren-Browser/releases/download/v${pkgver}/renbrowser-linux-arm64")

@@ -1,0 +1,21 @@
+pkgbase = gorrcd-git
+	pkgdesc = Go RRC hub daemon from reticulum-go-protocols, built from git
+	pkgver = r0.g0000000
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/reticulum-go-protocols
+	install = gorrcd-git.install
+	arch = x86_64
+	arch = aarch64
+	arch = armv7h
+	license = 0BSD
+	makedepends = git
+	makedepends = go
+	makedepends = make
+	provides = gorrcd
+	conflicts = gorrcd-bin
+	conflicts = gorrcd
+	options = !debug
+	source = git+https://github.com/Quad4-Software/reticulum-go-protocols.git#branch=master
+	sha256sums = SKIP
+
+pkgname = gorrcd-git

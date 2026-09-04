@@ -1,9 +1,9 @@
-pkgbase = reticulum-go
+pkgbase = reticulum-go-bin
 	pkgdesc = Reticulum network stack (Go), prebuilt release binary
 	pkgver = 1.1.1
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/Reticulum-Go
-	install = reticulum-go.install
+	install = reticulum-go-bin.install
 	arch = x86_64
 	arch = aarch64
 	arch = armv7h
@@ -11,6 +11,7 @@ pkgbase = reticulum-go
 	makedepends = make
 	provides = reticulum-go
 	conflicts = reticulum-go-git
+	replaces = reticulum-go
 	options = !debug
 	backup = var/lib/reticulum-go/config
 	source = https://github.com/Quad4-Software/Reticulum-Go/archive/refs/tags/v1.1.1.tar.gz
@@ -22,4 +23,4 @@ pkgbase = reticulum-go
 	source_armv7h = reticulum-go-linux-arm-1.1.1::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v1.1.1/reticulum-go-linux-arm
 	sha256sums_armv7h = 7d1ebb64ab6e266f658343f708f6136640b3a21540342aa0eba77bc61ac02244
 
-pkgname = reticulum-go
+pkgname = reticulum-go-bin

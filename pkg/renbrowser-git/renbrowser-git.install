@@ -1,0 +1,13 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'renbrowser-git is installed.'
+	printf '%s\n' 'Run: renbrowser'
+}
+
+post_upgrade() {
+	:
+}
+
+post_remove() {
+	:
+}

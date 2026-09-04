@@ -10,7 +10,7 @@ depends=('opus' 'opusfile' 'portaudio' 'espeak-ng' 'nss' 'gtk3' 'libnotify' 'lib
 makedepends=('git' 'nodejs' 'pnpm' 'python' 'python-pip' 'python-setuptools' 'python-wheel')
 optdepends=('noto-fonts-emoji: color emoji in the UI')
 provides=('meshchatx' 'reticulum-meshchatx')
-conflicts=('meshchatx')
+conflicts=('meshchatx-bin' 'meshchatx')
 options=('!strip' '!debug')
 install=meshchatx-git.install
 source=('git+https://github.com/Quad4-Software/MeshChatX.git#branch=master')

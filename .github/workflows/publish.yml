@@ -47,11 +47,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - package: reticulum-go
+          - package: reticulum-go-bin
             arch: x86_64
-          - package: reticulum-go
+          - package: reticulum-go-bin
             arch: aarch64
-          - package: reticulum-go
+          - package: reticulum-go-bin
             arch: armv7h
           - package: reticulum-go-git
             arch: x86_64
@@ -59,27 +59,41 @@ jobs:
             arch: aarch64
           - package: reticulum-go-git
             arch: armv7h
-          - package: meshchatx
+          - package: meshchatx-bin
             arch: x86_64
-          - package: meshchatx
+          - package: meshchatx-bin
             arch: aarch64
           - package: meshchatx-git
             arch: x86_64
-          - package: renbrowser
+          - package: renbrowser-bin
             arch: x86_64
-          - package: renbrowser
+          - package: renbrowser-bin
             arch: aarch64
-          - package: gorrcd
+          - package: renbrowser-git
             arch: x86_64
-          - package: gorrcd
+          - package: gorrcd-bin
+            arch: x86_64
+          - package: gorrcd-bin
             arch: aarch64
-          - package: gorrcd
+          - package: gorrcd-bin
             arch: armv7h
-          - package: golxmd
+          - package: gorrcd-git
             arch: x86_64
-          - package: golxmd
+          - package: gorrcd-git
             arch: aarch64
-          - package: golxmd
+          - package: gorrcd-git
+            arch: armv7h
+          - package: golxmd-bin
+            arch: x86_64
+          - package: golxmd-bin
+            arch: aarch64
+          - package: golxmd-bin
+            arch: armv7h
+          - package: golxmd-git
+            arch: x86_64
+          - package: golxmd-git
+            arch: aarch64
+          - package: golxmd-git
             arch: armv7h
           - package: rns
             arch: x86_64

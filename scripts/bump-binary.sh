@@ -3,7 +3,7 @@
 # Verifies release assets when pkg.conf sets VERIFY=cosign or VERIFY=slsa.
 #
 # Usage: bump-binary.sh NAME TAG
-# Example: bump-binary.sh reticulum-go v1.0.1
+# Example: bump-binary.sh reticulum-go-bin v1.0.1
 
 set -eu
 

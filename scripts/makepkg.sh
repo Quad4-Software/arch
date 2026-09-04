@@ -5,7 +5,7 @@
 # Usage:
 #   makepkg.sh                     build every package for host arch
 #   makepkg.sh reticulum-go        one package
-#   makepkg.sh reticulum-go aarch64
+#   makepkg.sh reticulum-go-bin aarch64
 # Env:
 #   FORCE_DOCKER=1   always use the pinned container
 #   PACKAGER         packager string for .PKGINFO

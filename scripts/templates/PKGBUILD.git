@@ -1,5 +1,5 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
-pkgname=@NAME@-git
+pkgname=@PKGNAME@
 pkgver=r0.g0000000
 pkgrel=1
 pkgdesc='Quad4 package built from git'
@@ -7,15 +7,15 @@ arch=('x86_64' 'aarch64')
 url='https://github.com/@GITHUB@'
 license=('Apache-2.0')
 makedepends=('git' 'go' 'make')
-provides=('@NAME@')
-conflicts=('@NAME@')
+provides=('@BASE@')
+conflicts=('@BASE@-bin' '@BASE@')
 options=('!debug')
-install=@NAME@-git.install
+install=@PKGNAME@.install
 source=('git+https://github.com/@GITHUB@.git#branch=@BRANCH@')
 sha256sums=('SKIP')
 
 pkgver() {
-	cd "$srcdir/@NAME@"
+	cd "$srcdir/@BASE@"
 	local d
 	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
 	if [ -n "$d" ]; then
@@ -26,13 +26,13 @@ pkgver() {
 }
 
 build() {
-	cd "$srcdir/@NAME@"
+	cd "$srcdir/@BASE@"
 	export CGO_ENABLED=0
 	export GOFLAGS='-mod=vendor -trimpath'
 	make build VERSION="$pkgver"
 }
 
 package() {
-	cd "$srcdir/@NAME@"
+	cd "$srcdir/@BASE@"
 	make DESTDIR="$pkgdir" PREFIX=/usr install
 }

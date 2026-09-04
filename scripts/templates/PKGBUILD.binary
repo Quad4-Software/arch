@@ -1,18 +1,19 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
-pkgname=@NAME@
+pkgname=@PKGNAME@
 pkgver=0
 pkgrel=1
 pkgdesc='Quad4 package (prebuilt release binary)'
 arch=('x86_64' 'aarch64' 'armv7h')
 url='https://github.com/@GITHUB@'
 license=('Apache-2.0')
-provides=('@NAME@')
-conflicts=('@NAME@-git')
+provides=('@BASE@')
+conflicts=('@BASE@-git')
+replaces=('@BASE@')
 options=('!debug')
-install=@NAME@.install
-source_x86_64=("@NAME@-linux-amd64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-amd64")
-source_aarch64=("@NAME@-linux-arm64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-arm64")
-source_armv7h=("@NAME@-linux-arm-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@NAME@-linux-arm")
+install=@PKGNAME@.install
+source_x86_64=("@BASE@-linux-amd64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@BASE@-linux-amd64")
+source_aarch64=("@BASE@-linux-arm64-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@BASE@-linux-arm64")
+source_armv7h=("@BASE@-linux-arm-${pkgver}::https://github.com/@GITHUB@/releases/download/v${pkgver}/@BASE@-linux-arm")
 # AUTO-SUMS-BEGIN
 sha256sums_x86_64=('REPLACE')
 sha256sums_aarch64=('REPLACE')
@@ -22,13 +23,13 @@ sha256sums_armv7h=('REPLACE')
 package() {
 	local bin
 	case "$CARCH" in
-	x86_64) bin="@NAME@-linux-amd64-${pkgver}" ;;
-	aarch64) bin="@NAME@-linux-arm64-${pkgver}" ;;
-	armv7h) bin="@NAME@-linux-arm-${pkgver}" ;;
+	x86_64) bin="@BASE@-linux-amd64-${pkgver}" ;;
+	aarch64) bin="@BASE@-linux-arm64-${pkgver}" ;;
+	armv7h) bin="@BASE@-linux-arm-${pkgver}" ;;
 	*)
 		echo "unsupported CARCH: $CARCH" >&2
 		return 1
 		;;
 	esac
-	install -Dm755 "$srcdir/$bin" "$pkgdir/usr/bin/@NAME@"
+	install -Dm755 "$srcdir/$bin" "$pkgdir/usr/bin/@BASE@"
 }

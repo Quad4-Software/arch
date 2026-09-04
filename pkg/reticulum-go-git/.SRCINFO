@@ -12,6 +12,7 @@ pkgbase = reticulum-go-git
 	makedepends = go
 	makedepends = make
 	provides = reticulum-go
+	conflicts = reticulum-go-bin
 	conflicts = reticulum-go
 	options = !debug
 	backup = var/lib/reticulum-go/config

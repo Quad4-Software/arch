@@ -1,0 +1,67 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=gorrcd-git
+pkgver=r0.g0000000
+pkgrel=1
+pkgdesc='Go RRC hub daemon from reticulum-go-protocols, built from git'
+arch=('x86_64' 'aarch64' 'armv7h')
+url='https://github.com/Quad4-Software/reticulum-go-protocols'
+license=('0BSD')
+makedepends=('git' 'go' 'make')
+provides=('gorrcd')
+conflicts=('gorrcd-bin' 'gorrcd')
+options=('!debug')
+install=gorrcd-git.install
+source=('git+https://github.com/Quad4-Software/reticulum-go-protocols.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/reticulum-go-protocols"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/reticulum-go-protocols"
+	case "$CARCH" in
+	x86_64) export GOARCH=amd64 ;;
+	aarch64) export GOARCH=arm64 ;;
+	armv7h)
+		export GOARCH=arm
+		export GOARM=6
+		;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	export CGO_ENABLED=0
+	export GOFLAGS='-mod=vendor -trimpath'
+	export GOPROXY=off
+	export GOSUMDB=off
+	export GOPATH="$srcdir/gopath"
+	export GOCACHE="$srcdir/gocache"
+	export GOMODCACHE="$srcdir/gomod"
+	mkdir -p "$GOPATH" "$GOCACHE" "$GOMODCACHE"
+	make gorrcd VERSION="$pkgver"
+}
+
+package() {
+	cd "$srcdir/reticulum-go-protocols"
+	local out
+	case "$CARCH" in
+	x86_64) out=bin/gorrcd-linux-amd64 ;;
+	aarch64) out=bin/gorrcd-linux-arm64 ;;
+	armv7h) out=bin/gorrcd-linux-armv6 ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	install -Dm755 "$out" "$pkgdir/usr/bin/gorrcd"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

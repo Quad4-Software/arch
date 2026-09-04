@@ -153,7 +153,7 @@ SigLevel = Optional TrustAll
 Server = https://arch.quad4.io/$arch
 Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre>
 	<pre>sudo pacman -Syu
-sudo pacman -S reticulum-go meshchatx</pre>
+sudo pacman -S reticulum-go-bin meshchatx-bin</pre>
 	<p class="muted">Packages are unsigned until a packaging key is published. Keep <code>SigLevel = Optional TrustAll</code> until then.</p>
 
 	<h2>Packages</h2>
@@ -162,13 +162,19 @@ sudo pacman -S reticulum-go meshchatx</pre>
 			<tr><th>Name</th><th>Description</th></tr>
 		</thead>
 		<tbody>
-			<tr><td><code>reticulum-go</code></td><td>Reticulum-Go, prebuilt release</td></tr>
+			<tr><td><code>reticulum-go-bin</code></td><td>Reticulum-Go, prebuilt release</td></tr>
 			<tr><td><code>reticulum-go-git</code></td><td>Reticulum-Go from master</td></tr>
-			<tr><td><code>meshchatx</code></td><td>MeshChatX AppImage</td></tr>
+			<tr><td><code>meshchatx-bin</code></td><td>MeshChatX AppImage</td></tr>
 			<tr><td><code>meshchatx-git</code></td><td>MeshChatX from master</td></tr>
+			<tr><td><code>renbrowser-bin</code></td><td>Ren Browser, prebuilt release</td></tr>
+			<tr><td><code>renbrowser-git</code></td><td>Ren Browser from master</td></tr>
+			<tr><td><code>gorrcd-bin</code> / <code>golxmd-bin</code></td><td>reticulum-go-protocols daemons, prebuilt</td></tr>
+			<tr><td><code>gorrcd-git</code> / <code>golxmd-git</code></td><td>reticulum-go-protocols daemons from master</td></tr>
+			<tr><td><code>rns</code> / <code>lxmf</code> / <code>nomadnet</code></td><td>External Python packages (PyPI)</td></tr>
+			<tr><td><code>lxmfy</code> / <code>rns-page-node</code> / <code>pip-rns</code></td><td>Quad4 Python packages (PyPI)</td></tr>
 		</tbody>
 	</table>
-	<p class="muted"><code>reticulum-go</code> conflicts with <code>reticulum-go-git</code>. <code>meshchatx</code> conflicts with <code>meshchatx-git</code>.</p>
+	<p class="muted"><code>*-bin</code> conflicts with <code>*-git</code> for the same app. Old bare names are replaced by <code>*-bin</code> on upgrade.</p>
 
 	<h2>Files</h2>
 	<div class="files">

@@ -1,0 +1,13 @@
+# shellcheck shell=sh
+post_install() {
+	printf '%s\n' 'gorrcd-git is installed.'
+	printf '%s\n' 'Run: gorrcd --help'
+}
+
+post_upgrade() {
+	:
+}
+
+post_remove() {
+	:
+}

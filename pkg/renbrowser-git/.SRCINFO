@@ -1,0 +1,27 @@
+pkgbase = renbrowser-git
+	pkgdesc = Modern browser for the Reticulum Network, built from git
+	pkgver = 0.3.0.r0.g0000000
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/Ren-Browser
+	install = renbrowser-git.install
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	makedepends = git
+	makedepends = go
+	makedepends = make
+	makedepends = nodejs
+	makedepends = pnpm
+	makedepends = pkgconf
+	depends = gtk4
+	depends = webkitgtk-6.0
+	depends = hicolor-icon-theme
+	provides = renbrowser
+	conflicts = renbrowser-bin
+	conflicts = renbrowser
+	options = !lto
+	options = !debug
+	source = git+https://github.com/Quad4-Software/Ren-Browser.git#branch=master
+	sha256sums = SKIP
+
+pkgname = renbrowser-git

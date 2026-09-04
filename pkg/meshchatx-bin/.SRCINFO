@@ -1,9 +1,9 @@
-pkgbase = meshchatx
+pkgbase = meshchatx-bin
 	pkgdesc = All-in-one Reticulum client (prebuilt AppImage)
 	pkgver = 4.8.5
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/MeshChatX
-	install = meshchatx.install
+	install = meshchatx-bin.install
 	arch = x86_64
 	arch = aarch64
 	license = 0BSD
@@ -13,6 +13,7 @@ pkgbase = meshchatx
 	provides = meshchatx
 	provides = reticulum-meshchatx
 	conflicts = meshchatx-git
+	replaces = meshchatx
 	options = !strip
 	options = !debug
 	source = https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/v4.8.5.tar.gz
@@ -22,4 +23,4 @@ pkgbase = meshchatx
 	source_aarch64 = ReticulumMeshChatX-v4.8.5-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v4.8.5/ReticulumMeshChatX-v4.8.5-linux-arm64.AppImage
 	sha256sums_aarch64 = 7a469acc09a45874c906a37918fc83ddff0ea628243c75a2e904d40a281e257b
 
-pkgname = meshchatx
+pkgname = meshchatx-bin

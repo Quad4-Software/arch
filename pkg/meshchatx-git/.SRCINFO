@@ -31,6 +31,7 @@ pkgbase = meshchatx-git
 	optdepends = noto-fonts-emoji: color emoji in the UI
 	provides = meshchatx
 	provides = reticulum-meshchatx
+	conflicts = meshchatx-bin
 	conflicts = meshchatx
 	options = !strip
 	options = !debug

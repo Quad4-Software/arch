@@ -17,7 +17,7 @@ Then:
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S reticulum-go meshchatx renbrowser rns lxmf nomadnet
+sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin rns lxmf nomadnet
 ```
 
 The first Server is [arch.quad4.io](https://arch.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
@@ -28,13 +28,16 @@ Packages are unsigned until a key is placed at `keys/quad4.gpg`. Keep `SigLevel 
 
 | Package | Description |
 | --- | --- |
-| `reticulum-go` | Reticulum-Go, prebuilt GitHub release (`x86_64`, `aarch64`, `armv7h`) |
+| `reticulum-go-bin` | Reticulum-Go, prebuilt GitHub release (`x86_64`, `aarch64`, `armv7h`) |
 | `reticulum-go-git` | Reticulum-Go built from `master` |
-| `meshchatx` | MeshChatX AppImage (`x86_64`, `aarch64`) |
+| `meshchatx-bin` | MeshChatX AppImage (`x86_64`, `aarch64`) |
 | `meshchatx-git` | MeshChatX built from `master` |
-| `renbrowser` | Ren Browser for Reticulum (`x86_64`, `aarch64`) |
-| `gorrcd` | Go RRC hub daemon from reticulum-go-protocols |
-| `golxmd` | Go LXMF daemon from reticulum-go-protocols |
+| `renbrowser-bin` | Ren Browser for Reticulum (`x86_64`, `aarch64`) |
+| `renbrowser-git` | Ren Browser built from `master` |
+| `gorrcd-bin` | Go RRC hub daemon (prebuilt) |
+| `gorrcd-git` | Go RRC hub daemon from `master` |
+| `golxmd-bin` | Go LXMF daemon (prebuilt) |
+| `golxmd-git` | Go LXMF daemon from `master` |
 | `rns` | Python Reticulum Network Stack (PyPI, external) |
 | `lxmf` | Python LXMF (PyPI, external) |
 | `nomadnet` | Nomad Network client (PyPI, external) |
@@ -42,7 +45,7 @@ Packages are unsigned until a key is placed at `keys/quad4.gpg`. Keep `SigLevel 
 | `rns-page-node` | RNS page/file node (PyPI) |
 | `pip-rns` | Install Python packages from Reticulum remotes (PyPI) |
 
-`reticulum-go` conflicts with `reticulum-go-git`. `meshchatx` conflicts with `meshchatx-git`. `rns`, `lxmf`, and `nomadnet` are third-party Markqvist packages mirrored for convenience.
+`*-bin` and `*-git` for the same app conflict and both provide the unversioned name (`reticulum-go`, `meshchatx`, …). Old bare names (`reticulum-go`, `meshchatx`, …) are replaced by the matching `*-bin` package on upgrade. Python packages stay unversioned (no `-bin`/`-git`). `rns`, `lxmf`, and `nomadnet` are third-party Markqvist packages mirrored for convenience.
 
 ## Development
 
@@ -59,14 +62,14 @@ Bump a binary package after an upstream release:
 
 ```bash
 sh scripts/install-verify-tools.sh
-sh scripts/bump-binary.sh reticulum-go v1.1.1
-sh scripts/bump-binary.sh meshchatx v4.8.5
+sh scripts/bump-binary.sh reticulum-go-bin v1.1.1
+sh scripts/bump-binary.sh meshchatx-bin v4.8.5
 ```
 
 Binary bumps fail closed unless release assets verify:
 
-- `reticulum-go`: cosign blob attestation (`.cosign.bundle`) against the pinned key in `keys/upstream/reticulum-go.cosign.pub`
-- `meshchatx`: SLSA provenance (`meshchatx-linux-v*.intoto.jsonl`) via `slsa-verifier` for `github.com/Quad4-Software/MeshChatX` and the release tag
+- `reticulum-go-bin`: cosign blob attestation (`.cosign.bundle`) against the pinned key in `keys/upstream/reticulum-go.cosign.pub`
+- `meshchatx-bin`: SLSA provenance (`meshchatx-linux-v*.intoto.jsonl`) via `slsa-verifier` for `github.com/Quad4-Software/MeshChatX` and the release tag
 
 Tool versions and sha256 pins live in `conf/ci-pins.env`. Arch image bumps cross-check the Docker Hub tag digest before rewriting the pin.
 
@@ -84,10 +87,10 @@ Scaffold a new package:
 
 ```bash
 sh scripts/new-pkg.sh other-tool --kind binary --github Quad4-Software/other-tool --tag v0.1.0
-sh scripts/new-pkg.sh other-tool-git --kind git --github Quad4-Software/other-tool
+sh scripts/new-pkg.sh other-tool --kind git --github Quad4-Software/other-tool
 ```
 
-Edit `package()` in the new PKGBUILD, then add matrix rows in `.github/workflows/ci.yml` and `publish.yml`.
+That creates `pkg/other-tool-bin` and `pkg/other-tool-git`. Edit `package()` in the new PKGBUILD, then add matrix rows in `.github/workflows/ci.yml` and `publish.yml`.
 
 From another Quad4 repository (needs `actions: write` on this repo):
 

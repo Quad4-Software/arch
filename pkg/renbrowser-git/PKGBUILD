@@ -1,0 +1,57 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=renbrowser-git
+pkgver=0.3.0.r0.g0000000
+pkgrel=1
+pkgdesc='Modern browser for the Reticulum Network, built from git'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Quad4-Software/Ren-Browser'
+license=('MIT')
+depends=('gtk4' 'webkitgtk-6.0' 'hicolor-icon-theme')
+makedepends=('git' 'go' 'make' 'nodejs' 'pnpm' 'pkgconf')
+provides=('renbrowser')
+conflicts=('renbrowser-bin' 'renbrowser')
+options=('!lto' '!debug')
+install=renbrowser-git.install
+source=('git+https://github.com/Quad4-Software/Ren-Browser.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/Ren-Browser"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/Ren-Browser"
+	export CGO_ENABLED=1
+	export GOFLAGS='-mod=vendor -buildmode=pie -trimpath'
+	export GOTOOLCHAIN="${GOTOOLCHAIN:-auto}"
+	export GOPATH="$srcdir/gopath"
+	export GOCACHE="$srcdir/gocache"
+	export GOMODCACHE="$srcdir/gomod"
+	mkdir -p "$GOPATH" "$GOCACHE" "$GOMODCACHE"
+	make build
+}
+
+package() {
+	cd "$srcdir/Ren-Browser"
+	install -Dm755 bin/renbrowser "$pkgdir/usr/bin/renbrowser"
+	install -Dm644 flatpak/io.quad4.renbrowser.desktop \
+		"$pkgdir/usr/share/applications/io.quad4.renbrowser.desktop"
+	install -Dm644 flatpak/io.quad4.renbrowser.svg \
+		"$pkgdir/usr/share/icons/hicolor/scalable/apps/io.quad4.renbrowser.svg"
+	if [ -f build/appicon.png ]; then
+		install -Dm644 build/appicon.png \
+			"$pkgdir/usr/share/icons/hicolor/128x128/apps/io.quad4.renbrowser.png"
+	fi
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+	sed -i \
+		-e 's|^Exec=.*|Exec=renbrowser %u|' \
+		-e 's|^Icon=.*|Icon=io.quad4.renbrowser|' \
+		"$pkgdir/usr/share/applications/io.quad4.renbrowser.desktop"
+}

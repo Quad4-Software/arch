@@ -18,6 +18,25 @@ fail() {
 	FAILED=1
 }
 
+_check_array_field() {
+	# Ensure each space-separated token from pkg.conf appears in PKGBUILD field=('...').
+	_name="$1"
+	_field="$2"
+	_vals="$3"
+	[ -n "$_vals" ] || return 0
+	_line="$(grep -E "^${_field}=" "$ROOT/pkg/${_name}/PKGBUILD" || true)"
+	[ -n "$_line" ] || {
+		fail "$_name: PKGBUILD missing ${_field}="
+		return 0
+	}
+	for _tok in $_vals; do
+		# Match token inside single quotes in PKGBUILD arrays.
+		if ! printf '%s\n' "$_line" | grep -Fq "'${_tok}'"; then
+			fail "$_name: ${_field}= missing '${_tok}'"
+		fi
+	done
+}
+
 check_pkg() {
 	name="$1"
 	dir="$ROOT/pkg/$name"
@@ -50,14 +69,15 @@ check_pkg() {
 			;;
 		esac
 		grep -q '# AUTO-SUMS-BEGIN' "$dir/PKGBUILD" || fail "$name: missing AUTO-SUMS markers"
-		if [ -n "${CONFLICTS:-}" ]; then
-			grep -q "conflicts=('${CONFLICTS}')" "$dir/PKGBUILD" || fail "$name: conflicts mismatch"
-		fi
+		_check_array_field "$name" conflicts "${CONFLICTS:-}"
+		_check_array_field "$name" provides "${PROVIDES:-}"
 		;;
 	git)
 		[ -n "${BRANCH:-}" ] || fail "$name: git pkg.conf missing BRANCH"
 		grep -q "sha256sums=('SKIP')" "$dir/PKGBUILD" || fail "$name: git PKGBUILD must SKIP checksums"
 		grep -q '^pkgver()' "$dir/PKGBUILD" || fail "$name: git PKGBUILD missing pkgver()"
+		_check_array_field "$name" conflicts "${CONFLICTS:-}"
+		_check_array_field "$name" provides "${PROVIDES:-}"
 		;;
 	python)
 		[ -n "${PYPI_NAME:-}" ] || fail "$name: python pkg.conf missing PYPI_NAME"

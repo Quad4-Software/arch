@@ -1,5 +1,5 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
-pkgname=reticulum-go
+pkgname=reticulum-go-bin
 pkgver=1.1.1
 pkgrel=1
 pkgdesc='Reticulum network stack (Go), prebuilt release binary'
@@ -8,10 +8,11 @@ url='https://github.com/Quad4-Software/Reticulum-Go'
 license=('Apache-2.0')
 provides=('reticulum-go')
 conflicts=('reticulum-go-git')
+replaces=('reticulum-go')
 backup=('var/lib/reticulum-go/config')
 options=('!debug')
 makedepends=('make')
-install=reticulum-go.install
+install=reticulum-go-bin.install
 source=("https://github.com/Quad4-Software/Reticulum-Go/archive/refs/tags/v${pkgver}.tar.gz")
 source_x86_64=("reticulum-go-linux-amd64-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-amd64")
 source_aarch64=("reticulum-go-linux-arm64-${pkgver}::https://github.com/Quad4-Software/Reticulum-Go/releases/download/v${pkgver}/reticulum-go-linux-arm64")

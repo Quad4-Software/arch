@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 post_install() {
-	printf '%s\n' '@NAME@-git is installed but not enabled.'
+	printf '%s\n' '@PKGNAME@ is installed (@BASE@ from git).'
 }
 
 post_upgrade() {
