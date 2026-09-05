@@ -1,6 +1,6 @@
 pkgbase = pip-rns
 	pkgdesc = Install Python packages from Reticulum rngit remotes
-	pkgver = 1.4.0
+	pkgver = 1.5.0
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/pip-rns
 	install = pip-rns.install
@@ -13,7 +13,7 @@ pkgbase = pip-rns
 	makedepends = python-hatchling
 	depends = python
 	options = !strip
-	source = https://files.pythonhosted.org/packages/70/37/74ad378b996ac0915e60fed1733d1004f389edd0bd30412eb35cfde86d53/pip_rns-1.4.0.tar.gz
-	sha256sums = 1ffe5d8c18709038e39d4c03fc827a7f2dc20fce74f2ce85320d84e0d3eca03c
+	source = https://files.pythonhosted.org/packages/62/a6/ae1d9a3745822c2afbd6975ef0f5b2a1c286b3dfc9fb0a631609c5556cad/pip_rns-1.5.0.tar.gz
+	sha256sums = bd0766be58c9528eb013c82bdc39639d83b5e4472a8ca8bab9c47167ede6e266
 
 pkgname = pip-rns
