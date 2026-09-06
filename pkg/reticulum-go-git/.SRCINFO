@@ -1,6 +1,6 @@
 pkgbase = reticulum-go-git
 	pkgdesc = Reticulum network stack (Go), built from git
-	pkgver = 1.0.1.r0.g0000000
+	pkgver = 1.1.1.r0.g0000000
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/Reticulum-Go
 	install = reticulum-go-git.install

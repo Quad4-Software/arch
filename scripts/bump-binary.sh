@@ -181,6 +181,7 @@ mv "$DIR/PKGBUILD.next" "$DIR/PKGBUILD"
 tmpconf="$(mktemp)"
 sed "s/^TAG=.*/TAG=${TAG}/" "$DIR/pkg.conf" >"$tmpconf"
 mv "$tmpconf" "$DIR/pkg.conf"
+chmod 644 "$DIR/PKGBUILD" "$DIR/pkg.conf"
 
 if [ -x "$ROOT/scripts/gen-srcinfo.sh" ]; then
 	sh "$ROOT/scripts/gen-srcinfo.sh" "$NAME" || true

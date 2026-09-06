@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=pip-rns
-pkgver=1.5.0
+pkgver=1.5.1
 pkgrel=1
 pkgdesc='Install Python packages from Reticulum rngit remotes'
 arch=('any')
@@ -10,17 +10,17 @@ depends=('python')
 makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools' 'python-hatchling')
 options=('!strip')
 install=pip-rns.install
-source=("https://files.pythonhosted.org/packages/62/a6/ae1d9a3745822c2afbd6975ef0f5b2a1c286b3dfc9fb0a631609c5556cad/pip_rns-1.5.0.tar.gz")
+source=("https://files.pythonhosted.org/packages/5b/a2/fadc28ee054614fe421abbe0adee21f35e7f1d5562770b6ca61fd0ba9d9a/pip_rns-1.5.1.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums=('bd0766be58c9528eb013c82bdc39639d83b5e4472a8ca8bab9c47167ede6e266')
+sha256sums=('724c1b6f7829a8e8a5ee93e30240f04ca3fe1ea6967ee1045c161a3dd929f43c')
 # AUTO-SUMS-END
 
 build() {
-	cd "$srcdir/pip_rns-1.5.0"
+	cd "$srcdir/pip_rns-1.5.1"
 	python -m build --wheel --no-isolation
 }
 
 package() {
-	cd "$srcdir/pip_rns-1.5.0"
+	cd "$srcdir/pip_rns-1.5.1"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 }

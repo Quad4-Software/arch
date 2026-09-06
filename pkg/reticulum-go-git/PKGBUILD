@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=reticulum-go-git
-pkgver=1.0.1.r0.g0000000
+pkgver=1.1.1.r0.g0000000
 pkgrel=1
 pkgdesc='Reticulum network stack (Go), built from git'
 arch=('x86_64' 'aarch64' 'armv7h')
