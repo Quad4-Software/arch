@@ -13,7 +13,7 @@ rm -rf "$PUB"
 mkdir -p "$PUB"
 
 if [ -d "$ROOT/repo" ]; then
-	cp -a "$ROOT/repo/." "$PUB/"
+	cp -aL "$ROOT/repo/." "$PUB/"
 	find "$PUB" -name '*.old*' -exec rm -f {} +
 fi
 if [ -d "$ROOT/site/icons" ]; then

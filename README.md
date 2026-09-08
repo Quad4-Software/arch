@@ -10,7 +10,7 @@ Append this to `/etc/pacman.conf` after the official `[core]` and `[extra]` bloc
 [quad4]
 SigLevel = PackageRequired DatabaseRequired
 Server = https://cdn.quad4.io/arch/$arch
-Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch
+Server = https://arch.quad4.io/$arch
 ```
 
 Then:
