@@ -217,11 +217,17 @@ Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre
 	<pre>sudo pacman-key --recv-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5 --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
 
+	<h3>2a. Alternative: download the key directly</h3>
+	<p>If you prefer not to use a keyserver, get the key from this site and add it manually:</p>
+	<pre>curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
+sudo pacman-key --add /tmp/quad4.gpg
+sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
+
 	<h3>3. Update and install</h3>
 	<pre>sudo pacman -Syu
 sudo pacman -S reticulum-go-bin meshchatx-bin</pre>
 
-	<p class="muted">The primary server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. If the keyserver is unreachable, download <a href="quad4.gpg">quad4.gpg</a> and run <code>sudo pacman-key --add quad4.gpg</code> instead.</p>
+	<p class="muted">The primary server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. The public key is also in the repo at <a href="https://github.com/Quad4-Software/arch/blob/master/keys/quad4.gpg">keys/quad4.gpg</a>.</p>
 
 	<h2>Packages</h2>
 	<table class="packages">
