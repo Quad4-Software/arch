@@ -298,3 +298,49 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: sh scripts/publish-release.sh
+
+  publish-bunnycdn:
+    name: BunnyCDN
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: publish-bunnycdn
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download repo tree
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: repo-tree
+          path: repo
+
+      - name: Upload to BunnyCDN
+        env:
+          BUNNY_STORAGE_ACCESS_KEY: ${{ secrets.BUNNY_STORAGE_ACCESS_KEY }}
+          BUNNY_STORAGE_BASE_URL: ${{ vars.BUNNY_STORAGE_BASE_URL }}
+          BUNNY_STORAGE_OBJECT_PREFIX: ${{ vars.BUNNY_STORAGE_OBJECT_PREFIX }}
+        run: |
+          set -eu
+          if [ -z "${BUNNY_STORAGE_ACCESS_KEY:-}" ]; then
+            echo "BUNNY_STORAGE_ACCESS_KEY not set; skipping BunnyCDN upload"
+            exit 0
+          fi
+          if [ -z "${BUNNY_STORAGE_BASE_URL:-}" ]; then
+            echo "BUNNY_STORAGE_BASE_URL not set; skipping BunnyCDN upload"
+            exit 0
+          fi
+          export BUNNY_STORAGE_BASE_URL
+          export BUNNY_STORAGE_ACCESS_KEY
+          export BUNNY_STORAGE_OBJECT_PREFIX="${BUNNY_STORAGE_OBJECT_PREFIX:-arch}"
+          python3 scripts/upload-bunnycdn.py repo

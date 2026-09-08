@@ -9,7 +9,7 @@ Append this to `/etc/pacman.conf` after the official `[core]` and `[extra]` bloc
 ```ini
 [quad4]
 SigLevel = Optional TrustAll
-Server = https://arch.quad4.io/$arch
+Server = https://cdn.quad4.io/arch/$arch
 Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch
 ```
 
@@ -20,7 +20,7 @@ sudo pacman -Syu
 sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin rns lxmf nomadnet
 ```
 
-The first Server is [arch.quad4.io](https://arch.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
+The first Server is [cdn.quad4.io](https://cdn.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
 
 Packages are unsigned until a key is placed at `keys/quad4.gpg`. Keep `SigLevel = Optional TrustAll` until then. After packages and the database are signed, switch to `SigLevel = Required` and import the public key.
 

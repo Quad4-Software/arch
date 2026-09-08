@@ -15,3 +15,5 @@ pkg/*/*.AppImage
 *.tar.zst
 .SRCINFO.bak
 keys/quad4-private.asc
+__pycache__/
+*.pyc
