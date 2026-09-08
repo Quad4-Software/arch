@@ -76,6 +76,12 @@
 			color: var(--fg);
 			letter-spacing: -0.01em;
 		}
+		h3 {
+			font-size: 0.95rem;
+			font-weight: 600;
+			margin: 1.75rem 0 0.5rem;
+			color: var(--fg);
+		}
 		p { margin: 0 0 1rem; }
 		.muted { color: var(--muted); }
 		pre {
@@ -199,14 +205,24 @@
 	</header>
 
 	<h2>Install</h2>
-	<p>Append this after the official <code>[core]</code> and <code>[extra]</code> blocks, or use <a href="pacman-quad4.conf">pacman-quad4.conf</a>.</p>
+
+	<h3>1. Add the repository</h3>
+	<p>Append this after the official <code>[core]</code> and <code>[extra]</code> blocks, or save <a href="pacman-quad4.conf">pacman-quad4.conf</a> as <code>/etc/pacman.conf</code>.</p>
 	<pre>[quad4]
-SigLevel = Optional TrustAll
+SigLevel = PackageRequired DatabaseRequired
 Server = https://cdn.quad4.io/arch/$arch
 Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre>
+
+	<h3>2. Import the packaging key</h3>
+	<pre>curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
+sudo pacman-key --add /tmp/quad4.gpg
+sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
+
+	<h3>3. Update and install</h3>
 	<pre>sudo pacman -Syu
 sudo pacman -S reticulum-go-bin meshchatx-bin</pre>
-	<p class="muted">The first server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. Packages and the repository database are signed. Add the key from <a href="quad4.gpg">quad4.gpg</a> and sign it locally before running <code>pacman -Syu</code>.</p>
+
+	<p class="muted">The primary server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. If the key is not published yet, use <code>SigLevel = Optional TrustAll</code> temporarily.</p>
 
 	<h2>Packages</h2>
 	<table class="packages">

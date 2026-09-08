@@ -98,7 +98,7 @@ sync_arch() {
 				[ -e "${REPO_NAME}.db.sig" ] || cp -f "${REPO_NAME}.db.tar.gz.sig" "${REPO_NAME}.db.sig"
 				[ -e "${REPO_NAME}.files.sig" ] || cp -f "${REPO_NAME}.files.tar.gz.sig" "${REPO_NAME}.files.sig"
 			fi
-			rm -f ./*.old ./*.old.sig
+			rm -f ./*.old*
 		)
 	fi
 }

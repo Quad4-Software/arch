@@ -39,4 +39,4 @@ if [ -n "$sign_flags" ]; then
 	[ -e "/repo/${REPO_NAME}.db.sig" ] || cp -f "/repo/${REPO_NAME}.db.tar.gz.sig" "/repo/${REPO_NAME}.db.sig"
 	[ -e "/repo/${REPO_NAME}.files.sig" ] || cp -f "/repo/${REPO_NAME}.files.tar.gz.sig" "/repo/${REPO_NAME}.files.sig"
 fi
-rm -f /repo/*.old /repo/*.old.sig
+rm -f /repo/*.old*
