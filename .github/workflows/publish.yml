@@ -350,7 +350,7 @@ jobs:
       - name: Upload to BunnyCDN
         env:
           BUNNY_STORAGE_ACCESS_KEY: ${{ secrets.BUNNY_STORAGE_ACCESS_KEY }}
-          BUNNY_STORAGE_BASE_URL: ${{ vars.BUNNY_STORAGE_BASE_URL }}
+          BUNNY_STORAGE_BASE_URL: ${{ vars.BUNNY_STORAGE_BASE_URL || 'https://ny.storage.bunnycdn.com/quad4' }}
           BUNNY_STORAGE_OBJECT_PREFIX: ${{ vars.BUNNY_STORAGE_OBJECT_PREFIX }}
         run: |
           set -eu
