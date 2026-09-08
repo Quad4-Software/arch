@@ -29,13 +29,17 @@ sudo pacman-key --recv-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5 --keyserver 
 sudo pacman-key --lsign-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5
 ```
 
-Alternative: download the key directly from the site and add it manually:
+<details>
+<summary>Alternative: download the key directly</summary>
+
+If you prefer not to use a keyserver, get the key from the site and add it manually:
 
 ```
 curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
 sudo pacman-key --add /tmp/quad4.gpg
 sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5
 ```
+</details>
 
 The public key is also in the repo at [`keys/quad4.gpg`](keys/quad4.gpg).
 

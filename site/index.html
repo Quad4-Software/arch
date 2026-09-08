@@ -82,6 +82,28 @@
 			margin: 1.75rem 0 0.5rem;
 			color: var(--fg);
 		}
+		details {
+			background: var(--code);
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			padding: 0.75rem 1rem;
+			margin: 0.75rem 0 1.25rem;
+		}
+		summary {
+			cursor: pointer;
+			color: var(--fg);
+			font-size: 0.9rem;
+			font-weight: 500;
+			list-style-position: outside;
+			margin-left: 1rem;
+		}
+		details > p {
+			margin: 0.75rem 0 0;
+			padding-top: 0.75rem;
+		}
+		details > pre {
+			margin-bottom: 0;
+		}
 		p { margin: 0 0 1rem; }
 		.muted { color: var(--muted); }
 		pre {
@@ -217,11 +239,13 @@ Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre
 	<pre>sudo pacman-key --recv-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5 --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
 
-	<h3>2a. Alternative: download the key directly</h3>
-	<p>If you prefer not to use a keyserver, get the key from this site and add it manually:</p>
-	<pre>curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
+	<details>
+		<summary>Alternative: download the key directly</summary>
+		<p>If you prefer not to use a keyserver, get the key from this site and add it manually:</p>
+		<pre>curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
 sudo pacman-key --add /tmp/quad4.gpg
 sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
+	</details>
 
 	<h3>3. Update and install</h3>
 	<pre>sudo pacman -Syu
