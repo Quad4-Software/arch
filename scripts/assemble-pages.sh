@@ -15,6 +15,9 @@ mkdir -p "$PUB"
 if [ -d "$ROOT/repo" ]; then
 	cp -a "$ROOT/repo/." "$PUB/"
 fi
+if [ -d "$ROOT/site/icons" ]; then
+	cp -a "$ROOT/site/icons/." "$PUB/icons/"
+fi
 cp "$ROOT/conf/pacman-quad4.conf" "$PUB/pacman-quad4.conf"
 if [ -f "$ROOT/keys/quad4.gpg" ]; then
 	cp "$ROOT/keys/quad4.gpg" "$PUB/quad4.gpg"
