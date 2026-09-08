@@ -206,7 +206,7 @@ Server = https://cdn.quad4.io/arch/$arch
 Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre>
 	<pre>sudo pacman -Syu
 sudo pacman -S reticulum-go-bin meshchatx-bin</pre>
-	<p class="muted">The first server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. Packages are unsigned until a packaging key is published, so keep <code>SigLevel = Optional TrustAll</code> until then.</p>
+	<p class="muted">The first server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. Packages and the repository database are signed. Add the key from <a href="quad4.gpg">quad4.gpg</a> and sign it locally before running <code>pacman -Syu</code>.</p>
 
 	<h2>Packages</h2>
 	<table class="packages">

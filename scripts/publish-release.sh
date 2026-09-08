@@ -40,7 +40,7 @@ upload_arch() {
 	printf '%s\n' "Pacman database and packages for ${arch}." >"$notes"
 	printf '%s\n' "Server = https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}" >>"$notes"
 
-	assets="$(find "$dir" -maxdepth 1 -type f ! -name '*.old' | LC_ALL=C sort)"
+	assets="$(find "$dir" -maxdepth 1 \( -type f -o -type l \) ! -name '*.old' ! -name '*.old.sig' | LC_ALL=C sort)"
 	[ -n "$assets" ] || die "no assets under repo/$arch"
 
 	remove_rolling_tag "$tag"

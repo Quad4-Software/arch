@@ -133,11 +133,22 @@ jobs:
           *) echo "run=false" >>"$GITHUB_OUTPUT" ;;
           esac
 
+      - name: Import GPG key
+        if: steps.want.outputs.run == 'true'
+        env:
+          PACKAGER_GPG_PRIVATE_KEY: ${{ secrets.PACKAGER_GPG_PRIVATE_KEY }}
+        run: |
+          set -eu
+          if [ -n "${PACKAGER_GPG_PRIVATE_KEY:-}" ]; then
+            printf '%s\n' "$PACKAGER_GPG_PRIVATE_KEY" | gpg --batch --import
+          fi
+
       - name: Build package
         if: steps.want.outputs.run == 'true'
         env:
           PKG_NAME: ${{ matrix.package }}
           PKG_ARCH: ${{ matrix.arch }}
+          PACKAGER_GPG_PRIVATE_KEY: ${{ secrets.PACKAGER_GPG_PRIVATE_KEY }}
         run: sh scripts/makepkg.sh "$PKG_NAME" "$PKG_ARCH"
 
       - name: Upload package
@@ -145,7 +156,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ matrix.package }}-${{ matrix.arch }}
-          path: out/${{ matrix.arch }}/*.pkg.tar.zst
+          path: out/${{ matrix.arch }}/*.pkg.tar.zst*
           if-no-files-found: error
 
   assemble:
@@ -168,18 +179,29 @@ jobs:
         with:
           path: artifacts
 
+      - name: Import GPG key
+        env:
+          PACKAGER_GPG_PRIVATE_KEY: ${{ secrets.PACKAGER_GPG_PRIVATE_KEY }}
+        run: |
+          set -eu
+          if [ -n "${PACKAGER_GPG_PRIVATE_KEY:-}" ]; then
+            printf '%s\n' "$PACKAGER_GPG_PRIVATE_KEY" | gpg --batch --import
+          fi
+
       - name: Layout out/\$arch and repo-add
+        env:
+          PACKAGER_GPG_PRIVATE_KEY: ${{ secrets.PACKAGER_GPG_PRIVATE_KEY }}
         run: |
           set -eu
           mkdir -p out/x86_64 out/aarch64 out/armv7h
-          find artifacts -type f -name '*.pkg.tar.zst' -exec sh -c '
+          find artifacts \( -type f -o -type l \) \( -name '*.pkg.tar.zst' -o -name '*.pkg.tar.zst.sig' \) -exec sh -c '
             for f do
               base=$(basename "$f")
               case "$base" in
-              *-x86_64.pkg.tar.zst) dest=out/x86_64 ;;
-              *-aarch64.pkg.tar.zst) dest=out/aarch64 ;;
-              *-armv7h.pkg.tar.zst) dest=out/armv7h ;;
-              *-any.pkg.tar.zst)
+              *-x86_64.pkg.tar.zst*) dest=out/x86_64 ;;
+              *-aarch64.pkg.tar.zst*) dest=out/aarch64 ;;
+              *-armv7h.pkg.tar.zst*) dest=out/armv7h ;;
+              *-any.pkg.tar.zst*)
                 cp -a "$f" out/x86_64/
                 cp -a "$f" out/aarch64/
                 cp -a "$f" out/armv7h/
