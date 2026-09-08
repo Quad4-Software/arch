@@ -112,7 +112,11 @@ log "==> trust pins"
 [ -n "${COSIGN_VERSION:-}" ] || fail "ci-pins.env missing COSIGN_VERSION"
 [ -n "${COSIGN_SHA256:-}" ] || fail "ci-pins.env missing COSIGN_SHA256"
 [ -n "${SLSA_VERIFIER_VERSION:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_VERSION"
-[ -n "${SLSA_VERIFIER_SHA256:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_SHA256"
+if [ "${SLSA_VERIFIER_BUILD:-}" = "1" ]; then
+	[ -n "${SLSA_VERIFIER_COMMIT:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_COMMIT"
+else
+	[ -n "${SLSA_VERIFIER_SHA256:-}" ] || fail "ci-pins.env missing SLSA_VERIFIER_SHA256"
+fi
 [ -f "$ROOT/keys/upstream/reticulum-go.cosign.pub" ] || fail "missing keys/upstream/reticulum-go.cosign.pub"
 [ -f "$ROOT/keys/upstream/meshchatx.cosign.pub" ] || fail "missing keys/upstream/meshchatx.cosign.pub"
 

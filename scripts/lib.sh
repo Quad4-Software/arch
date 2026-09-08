@@ -36,7 +36,11 @@ load_repo_conf() {
 	: "${COSIGN_VERSION:?ci-pins.env missing COSIGN_VERSION}"
 	: "${COSIGN_SHA256:?ci-pins.env missing COSIGN_SHA256}"
 	: "${SLSA_VERIFIER_VERSION:?ci-pins.env missing SLSA_VERIFIER_VERSION}"
-	: "${SLSA_VERIFIER_SHA256:?ci-pins.env missing SLSA_VERIFIER_SHA256}"
+	if [ "${SLSA_VERIFIER_BUILD:-}" = "1" ]; then
+		: "${SLSA_VERIFIER_COMMIT:?ci-pins.env missing SLSA_VERIFIER_COMMIT}"
+	else
+		: "${SLSA_VERIFIER_SHA256:?ci-pins.env missing SLSA_VERIFIER_SHA256}"
+	fi
 }
 
 load_pkg_conf() {

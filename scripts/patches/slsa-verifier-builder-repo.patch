@@ -1,0 +1,22 @@
+diff --git a/verifiers/internal/gha/builder.go b/verifiers/internal/gha/builder.go
+index 5eb71c4..eb2485d 100644
+--- a/verifiers/internal/gha/builder.go
++++ b/verifiers/internal/gha/builder.go
+@@ -184,10 +184,14 @@ func verifyTrustedBuilderRef(ctx context.Context, id *WorkflowIdentity, ref stri
+ 		if resolver == nil {
+ 			return fmt.Errorf("%w: SHA pinning requires a tag resolver; set GITHUB_TOKEN or provide a resolver", serrors.ErrorInvalidRef)
+ 		}
+-		parts := strings.SplitN(id.SourceRepository, "/", 2)
+-		if len(parts) != 2 {
+-			return fmt.Errorf("%w: cannot parse repository %q", serrors.ErrorInvalidRef, id.SourceRepository)
++		// The builder ref belongs to the reusable workflow in SubjectWorkflow,
++		// not the source repository. Resolve the SHA in the builder repo.
++		builderPath := strings.TrimPrefix(id.SubjectWorkflow.Path, "/")
++		parts := strings.SplitN(builderPath, "/", 3)
++		if len(parts) < 2 {
++			return fmt.Errorf("%w: cannot parse builder repository from %q", serrors.ErrorInvalidRef, id.SubjectWorkflow.String())
+ 		}
++		parts = parts[:2]
+ 		return utils.IsValidBuilderSHARef(ctx, ref, testing, resolver, parts[0], parts[1])
+ 	}
+ 

@@ -63,7 +63,7 @@ Bump a binary package after an upstream release:
 ```bash
 sh scripts/install-verify-tools.sh
 sh scripts/bump-binary.sh reticulum-go-bin v1.1.1
-sh scripts/bump-binary.sh meshchatx-bin v4.8.5
+sh scripts/bump-binary.sh meshchatx-bin v4.8.6
 ```
 
 Binary bumps fail closed unless release assets verify:

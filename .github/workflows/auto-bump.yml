@@ -1,5 +1,6 @@
 # Pinned first-party actions (bump tag and SHA together when upgrading):
 #   actions/checkout@v7.0.1                     3d3c42e5aac5ba805825da76410c181273ba90b1
+#   actions/setup-go@v5.5.0                     d35c59abb061a4a6fb18e82ac0862c26744d6ab5
 #
 # Bumps binary package TAGs and the Arch docker image pin when upstream is newer.
 # Opens (or updates) a PR and enables auto-merge when CI is green.
@@ -39,6 +40,11 @@ jobs:
         with:
           token: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
           persist-credentials: true
+
+      - name: Set up Go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version: '1.27.1'
 
       - name: Install verify tools
         run: sh scripts/install-verify-tools.sh
