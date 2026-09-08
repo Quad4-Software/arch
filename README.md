@@ -22,14 +22,14 @@ sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin rns lxmf nomadnet
 
 The first Server is [cdn.quad4.io](https://cdn.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
 
-Packages and the database are signed. Add the public key before the first update:
+Packages and the database are signed. Add the packaging key before the first update:
 
 ```
-sudo pacman-key --add /usr/share/pacman/keyrings/quad4.gpg
-sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5
+sudo pacman-key --recv-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5 --keyserver keyserver.ubuntu.com
+sudo pacman-key --lsign-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5
 ```
 
-Or download it from [arch.quad4.io/quad4.gpg](https://arch.quad4.io/quad4.gpg).
+If the keyserver is unreachable, download [arch.quad4.io/quad4.gpg](https://arch.quad4.io/quad4.gpg) and run `sudo pacman-key --add quad4.gpg`.
 
 ## Packages
 

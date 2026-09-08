@@ -207,22 +207,21 @@
 	<h2>Install</h2>
 
 	<h3>1. Add the repository</h3>
-	<p>Append this after the official <code>[core]</code> and <code>[extra]</code> blocks, or save <a href="pacman-quad4.conf">pacman-quad4.conf</a> as <code>/etc/pacman.conf</code>.</p>
+	<p>Append this after the official <code>[core]</code> and <code>[extra]</code> blocks, or copy the contents of <a href="pacman-quad4.conf">pacman-quad4.conf</a>.</p>
 	<pre>[quad4]
 SigLevel = PackageRequired DatabaseRequired
 Server = https://cdn.quad4.io/arch/$arch
 Server = https://github.com/Quad4-Software/arch/releases/download/pkg-$arch</pre>
 
 	<h3>2. Import the packaging key</h3>
-	<pre>curl -o /tmp/quad4.gpg https://arch.quad4.io/quad4.gpg
-sudo pacman-key --add /tmp/quad4.gpg
-sudo pacman-key --lsign 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
+	<pre>sudo pacman-key --recv-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5 --keyserver keyserver.ubuntu.com
+sudo pacman-key --lsign-key 97B937E980BDD9C89F06D7FA3BCCE6B7FB4AE3B5</pre>
 
 	<h3>3. Update and install</h3>
 	<pre>sudo pacman -Syu
 sudo pacman -S reticulum-go-bin meshchatx-bin</pre>
 
-	<p class="muted">The primary server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. If the key is not published yet, use <code>SigLevel = Optional TrustAll</code> temporarily.</p>
+	<p class="muted">The primary server is <code>cdn.quad4.io</code>; GitHub Releases is the fallback. If the keyserver is unreachable, download <a href="quad4.gpg">quad4.gpg</a> and run <code>sudo pacman-key --add quad4.gpg</code> instead.</p>
 
 	<h2>Packages</h2>
 	<table class="packages">
