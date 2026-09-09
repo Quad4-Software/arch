@@ -117,7 +117,7 @@ PROVIDES="$BASE"
 REPLACES="$BASE"
 VERIFY=none
 EOF
-	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s/@GITHUB@/${GITHUB}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s#@GITHUB@#${GITHUB}#g" \
 		"$ROOT/scripts/templates/PKGBUILD.binary" >"$ROOT/pkg/$NAME/PKGBUILD"
 	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" \
 		"$ROOT/scripts/templates/install.binary" >"$ROOT/pkg/$NAME/${NAME}.install"
@@ -131,7 +131,7 @@ BRANCH=$BRANCH
 CONFLICTS="${BASE}-bin ${BASE}"
 PROVIDES="$BASE"
 EOF
-	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s/@GITHUB@/${GITHUB}/g" -e "s/@BRANCH@/${BRANCH}/g" \
+	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" -e "s#@GITHUB@#${GITHUB}#g" -e "s/@BRANCH@/${BRANCH}/g" \
 		"$ROOT/scripts/templates/PKGBUILD.git" >"$ROOT/pkg/$NAME/PKGBUILD"
 	sed -e "s/@PKGNAME@/${NAME}/g" -e "s/@BASE@/${BASE}/g" \
 		"$ROOT/scripts/templates/install.git" >"$ROOT/pkg/$NAME/${NAME}.install"

@@ -1,0 +1,19 @@
+pkgbase = ravenguard-git
+	pkgdesc = HTTP Web Application Firewall and reverse proxy
+	pkgver = r63.e9eaf8d
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/ravenguard
+	install = ravenguard-git.install
+	arch = x86_64
+	arch = aarch64
+	license = 0BSD
+	makedepends = git
+	makedepends = go
+	provides = ravenguard
+	conflicts = ravenguard-bin
+	conflicts = ravenguard
+	options = !debug
+	source = git+https://github.com/Quad4-Software/ravenguard.git#branch=master
+	sha256sums = SKIP
+
+pkgname = ravenguard-git

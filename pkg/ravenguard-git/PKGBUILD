@@ -1,0 +1,44 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=ravenguard-git
+pkgver=r63.e9eaf8d
+pkgrel=1
+pkgdesc='HTTP Web Application Firewall and reverse proxy'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Quad4-Software/ravenguard'
+license=('0BSD')
+makedepends=('git' 'go')
+provides=('ravenguard')
+conflicts=('ravenguard-bin' 'ravenguard')
+options=('!debug')
+install=ravenguard-git.install
+source=('git+https://github.com/Quad4-Software/ravenguard.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/ravenguard"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/ravenguard"
+	export CGO_ENABLED=0
+	export GOFLAGS='-trimpath'
+	export GOTOOLCHAIN=local
+	local _commit
+	_commit="$(git rev-parse --short=7 HEAD)"
+	go build -trimpath -ldflags "-s -w -X github.com/Quad4-Software/ravenguard/internal/version.Commit=${_commit} -X github.com/Quad4-Software/ravenguard/internal/version.Version=${pkgver}" -o bin/ravenguard ./cmd/ravenguard
+}
+
+package() {
+	cd "$srcdir/ravenguard"
+	install -Dm755 bin/ravenguard "$pkgdir/usr/bin/ravenguard"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+	install -d "$pkgdir/usr/share/ravenguard"
+	install -m644 configs/ravenguard.toml "$pkgdir/usr/share/ravenguard/ravenguard.toml.example"
+}

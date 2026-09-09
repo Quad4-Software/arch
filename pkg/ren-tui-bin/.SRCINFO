@@ -1,0 +1,21 @@
+pkgbase = ren-tui-bin
+	pkgdesc = Terminal LXMF client for Reticulum
+	pkgver = 0.3.1
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/Ren-TUI
+	install = ren-tui-bin.install
+	arch = x86_64
+	arch = aarch64
+	license = 0BSD
+	provides = ren-tui
+	conflicts = ren-tui-git
+	replaces = ren-tui
+	options = !debug
+	source = https://github.com/Quad4-Software/Ren-TUI/archive/refs/tags/v0.3.1.tar.gz
+	sha256sums = f63371dc5fa2fc37030606272c4df201bdeb78b1203779186301d43746f68a0c
+	source_x86_64 = ren-tui-v0.3.1-linux-amd64-glibc.tar.gz::https://github.com/Quad4-Software/Ren-TUI/releases/download/v0.3.1/ren-tui-v0.3.1-linux-amd64-glibc.tar.gz
+	sha256sums_x86_64 = 8f3c19c714064ececf01c8600823904d73771a324708eed3be43d393c2a03616
+	source_aarch64 = ren-tui-v0.3.1-linux-arm64.tar.gz::https://github.com/Quad4-Software/Ren-TUI/releases/download/v0.3.1/ren-tui-v0.3.1-linux-arm64.tar.gz
+	sha256sums_aarch64 = b611cdf87daaa4a59cac502746fe092ebb2770f871137c9224359d0b8bbfa444
+
+pkgname = ren-tui-bin

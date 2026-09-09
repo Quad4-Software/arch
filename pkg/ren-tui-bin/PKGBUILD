@@ -1,0 +1,60 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=ren-tui-bin
+pkgver=0.3.1
+pkgrel=1
+pkgdesc='Terminal LXMF client for Reticulum'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Quad4-Software/Ren-TUI'
+license=('0BSD')
+provides=('ren-tui')
+conflicts=('ren-tui-git')
+replaces=('ren-tui')
+options=('!debug')
+install=ren-tui-bin.install
+source=("https://github.com/Quad4-Software/Ren-TUI/archive/refs/tags/v${pkgver}.tar.gz")
+source_x86_64=("ren-tui-v${pkgver}-linux-amd64-glibc.tar.gz::https://github.com/Quad4-Software/Ren-TUI/releases/download/v${pkgver}/ren-tui-v${pkgver}-linux-amd64-glibc.tar.gz")
+source_aarch64=("ren-tui-v${pkgver}-linux-arm64.tar.gz::https://github.com/Quad4-Software/Ren-TUI/releases/download/v${pkgver}/ren-tui-v${pkgver}-linux-arm64.tar.gz")
+# AUTO-SUMS-BEGIN
+sha256sums=('f63371dc5fa2fc37030606272c4df201bdeb78b1203779186301d43746f68a0c')
+sha256sums_x86_64=('8f3c19c714064ececf01c8600823904d73771a324708eed3be43d393c2a03616')
+sha256sums_aarch64=('b611cdf87daaa4a59cac502746fe092ebb2770f871137c9224359d0b8bbfa444')
+# AUTO-SUMS-END
+
+package() {
+	local dist srcdir_src
+	case "$CARCH" in
+	x86_64) dist="ren-tui-v${pkgver}-linux-amd64-glibc" ;;
+	aarch64) dist="ren-tui-v${pkgver}-linux-arm64" ;;
+	*)
+		echo "unsupported CARCH: $CARCH" >&2
+		return 1
+		;;
+	esac
+	srcdir_src="$srcdir/Ren-TUI-${pkgver}"
+
+	install -d "$pkgdir/usr/lib/ren-tui"
+	install -Dm755 "$srcdir/$dist/ren-tui" "$pkgdir/usr/lib/ren-tui/ren-tui"
+	install -Dm755 "$srcdir/$dist/ren-listen" "$pkgdir/usr/lib/ren-tui/ren-listen"
+	install -Dm755 "$srcdir/$dist/librns.so" "$pkgdir/usr/lib/ren-tui/librns.so"
+
+	install -d "$pkgdir/usr/bin"
+	cat >"$pkgdir/usr/bin/ren-tui" <<'EOF'
+#!/bin/sh
+exec /usr/lib/ren-tui/ren-tui "$@"
+EOF
+	chmod 755 "$pkgdir/usr/bin/ren-tui"
+	cat >"$pkgdir/usr/bin/ren-listen" <<'EOF'
+#!/bin/sh
+exec /usr/lib/ren-tui/ren-listen "$@"
+EOF
+	chmod 755 "$pkgdir/usr/bin/ren-listen"
+
+	if [ -f "$srcdir_src/man/ren-tui.1" ]; then
+		install -Dm644 "$srcdir_src/man/ren-tui.1" "$pkgdir/usr/share/man/man1/ren-tui.1"
+	fi
+	if [ -f "$srcdir_src/man/ren-listen.1" ]; then
+		install -Dm644 "$srcdir_src/man/ren-listen.1" "$pkgdir/usr/share/man/man1/ren-listen.1"
+	fi
+
+	install -Dm644 "$srcdir_src/LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

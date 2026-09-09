@@ -17,7 +17,7 @@ Then:
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin rns lxmf nomadnet
+sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin nullray-bin ren-tui-bin ravenguard-git rns lxmf nomadnet
 ```
 
 The first Server is [cdn.quad4.io](https://cdn.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
@@ -63,6 +63,9 @@ The public key is also in the repo at [`keys/quad4.gpg`](keys/quad4.gpg).
 | `lxmfy` | LXMF bot framework (PyPI) |
 | `rns-page-node` | RNS page/file node (PyPI) |
 | `pip-rns` | Install Python packages from Reticulum remotes (PyPI) |
+| `nullray-bin` | nullray, prebuilt GitHub release (`x86_64`, `aarch64`) |
+| `ren-tui-bin` | Ren TUI, prebuilt GitHub release (`x86_64`, `aarch64`) |
+| `ravenguard-git` | RavenGuard built from `master` |
 
 `*-bin` and `*-git` for the same app conflict and both provide the unversioned name (`reticulum-go`, `meshchatx`, …). Old bare names (`reticulum-go`, `meshchatx`, …) are replaced by the matching `*-bin` package on upgrade. Python packages stay unversioned (no `-bin`/`-git`). `rns`, `lxmf`, and `nomadnet` are third-party Markqvist packages mirrored for convenience.
 

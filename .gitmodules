@@ -1,0 +1,9 @@
+[submodule "nullray"]
+	path = nullray
+	url = https://github.com/Quad4-Software/nullray.git
+[submodule "Ren-TUI"]
+	path = Ren-TUI
+	url = https://github.com/Quad4-Software/Ren-TUI.git
+[submodule "ravenguard"]
+	path = ravenguard
+	url = https://github.com/Quad4-Software/ravenguard.git

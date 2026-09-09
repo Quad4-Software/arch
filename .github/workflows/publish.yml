@@ -71,6 +71,18 @@ jobs:
             arch: aarch64
           - package: renbrowser-git
             arch: x86_64
+          - package: nullray-bin
+            arch: x86_64
+          - package: nullray-bin
+            arch: aarch64
+          - package: ren-tui-bin
+            arch: x86_64
+          - package: ren-tui-bin
+            arch: aarch64
+          - package: ravenguard-git
+            arch: x86_64
+          - package: ravenguard-git
+            arch: aarch64
           - package: gorrcd-bin
             arch: x86_64
           - package: gorrcd-bin
