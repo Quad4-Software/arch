@@ -120,22 +120,15 @@ PY
 write_ci_pins() {
 	new_tag="$1"
 	new_digest="$2"
-	cat >"$ROOT/conf/ci-pins.env" <<EOF
-# Pinned CI images. Bump tag and digest together.
-# Official Arch Linux docker image: https://hub.docker.com/_/archlinux
-#
-#   archlinux:${new_tag}
-#   digest ${new_digest}
-
-ARCHLINUX_IMAGE=docker.io/library/archlinux:${new_tag}
-ARCHLINUX_DIGEST=${new_digest}
-
-# Release verification tools (linux-amd64). Bump version and sha256 together.
-COSIGN_VERSION=${COSIGN_VERSION}
-COSIGN_SHA256=${COSIGN_SHA256}
-SLSA_VERIFIER_VERSION=${SLSA_VERIFIER_VERSION}
-SLSA_VERIFIER_SHA256=${SLSA_VERIFIER_SHA256}
-EOF
+	pins_tmp="$(mktemp)"
+	sed \
+		-e "s|^#   archlinux:.*|#   archlinux:${new_tag}|" \
+		-e "s|^#   digest .*|#   digest ${new_digest}|" \
+		-e "s|^ARCHLINUX_IMAGE=.*|ARCHLINUX_IMAGE=docker.io/library/archlinux:${new_tag}|" \
+		-e "s|^ARCHLINUX_DIGEST=.*|ARCHLINUX_DIGEST=${new_digest}|" \
+		"$ROOT/conf/ci-pins.env" >"$pins_tmp"
+	mv "$pins_tmp" "$ROOT/conf/ci-pins.env"
+	chmod 644 "$ROOT/conf/ci-pins.env"
 }
 
 bump_arch_image() {
