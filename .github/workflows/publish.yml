@@ -63,6 +63,14 @@ jobs:
             arch: x86_64
           - package: meshchatx-bin
             arch: aarch64
+          - package: meshchatx-beta-bin
+            arch: x86_64
+          - package: meshchatx-beta-bin
+            arch: aarch64
+          - package: meshchatx-testing-bin
+            arch: x86_64
+          - package: meshchatx-testing-bin
+            arch: aarch64
           - package: meshchatx-git
             arch: x86_64
           - package: renbrowser-bin

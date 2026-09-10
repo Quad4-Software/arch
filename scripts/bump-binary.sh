@@ -24,7 +24,6 @@ need_cmd curl
 need_cmd sha256sum
 need_cmd sed
 
-VER="${TAG#v}"
 DIR="$ROOT/pkg/$NAME"
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
@@ -40,8 +39,57 @@ download() {
 	curl -fsSL --retry 3 --retry-delay 2 -o "$out" "$url"
 }
 
+base="https://github.com/${GITHUB}/releases/download/${TAG}"
+
+# Compute application version (for asset names) and package version
+APPVER="${TAG#v}"
+case "${VERSION_FROM:-}" in
+"" | tag)
+	APPVER="${TAG#v}"
+	;;
+tag-strip:*)
+	prefix="${VERSION_FROM#tag-strip:}"
+	APPVER="${TAG#"$prefix"}"
+	;;
+latest-yml:*)
+	file="${VERSION_FROM#latest-yml:}"
+	download "${base}/${file}" "$WORKDIR/latest-yml"
+	APPVER="$(sed -n 's/^version: *//p' "$WORKDIR/latest-yml")"
+	[ -n "$APPVER" ] || die "$NAME: could not parse version from ${file}"
+	;;
+*)
+	die "$NAME: unknown VERSION_FROM=${VERSION_FROM}"
+	;;
+esac
+
+# Compute optional package version suffix
+PKGVER_SUFFIX=""
+case "${VERSION_SUFFIX_FROM:-}" in
+"" | none)
+	PKGVER_SUFFIX="${VERSION_SUFFIX:-}"
+	;;
+tag-suffix:*)
+	prefix="${VERSION_SUFFIX_FROM#tag-suffix:}"
+	raw="${TAG#"$prefix"}"
+	[ -n "$raw" ] || die "$NAME: VERSION_SUFFIX_FROM prefix ${prefix} not in ${TAG}"
+	raw="$(printf '%s' "$raw" | tr '-' '.')"
+	PKGVER_SUFFIX=".${raw}"
+	;;
+*)
+	die "$NAME: unknown VERSION_SUFFIX_FROM=${VERSION_SUFFIX_FROM}"
+	;;
+esac
+PKGVER="${APPVER}${PKGVER_SUFFIX}"
+
+# For backward compatibility, @VER@ expands to APPVER
+VER="$APPVER"
+
 expand_ver() {
-	printf '%s' "$1" | sed "s/@VER@/${VER}/g"
+	printf '%s' "$1" | sed \
+		-e "s/@APPVER@/${APPVER}/g" \
+		-e "s/@TAG@/${TAG}/g" \
+		-e "s/@VER@/${VER}/g" \
+		-e "s/@PKGVER@/${PKGVER}/g"
 }
 
 ensure_verify_tools() {
@@ -118,7 +166,6 @@ verify_blob() {
 
 ensure_verify_tools
 
-base="https://github.com/${GITHUB}/releases/download/${TAG}"
 src_url="https://github.com/${GITHUB}/archive/refs/tags/${TAG}.tar.gz"
 
 src_sum=""
@@ -169,9 +216,11 @@ fi
 sums_block="${sums_block}
 # AUTO-SUMS-END"
 
-awk -v ver="$VER" -v block="$sums_block" '
+awk -v pkgver="$PKGVER" -v tag="$TAG" -v appver="$APPVER" -v block="$sums_block" '
 	BEGIN { in_sums=0 }
-	/^pkgver=/ { print "pkgver=" ver; next }
+	/^pkgver=/ { print "pkgver=" pkgver; next }
+	/^_tag=/ { print "_tag=" tag; next }
+	/^_appver=/ { print "_appver=" appver; next }
 	/^# AUTO-SUMS-BEGIN$/ { print block; in_sums=1; next }
 	/^# AUTO-SUMS-END$/ { in_sums=0; next }
 	{ if (!in_sums) print }
@@ -187,4 +236,4 @@ if [ -x "$ROOT/scripts/gen-srcinfo.sh" ]; then
 	sh "$ROOT/scripts/gen-srcinfo.sh" "$NAME" || true
 fi
 
-log "Updated $NAME to $TAG ($VER)"
+log "Updated $NAME to $TAG (appver=$APPVER pkgver=$PKGVER)"

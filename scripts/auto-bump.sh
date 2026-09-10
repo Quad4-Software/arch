@@ -51,7 +51,9 @@ bump_binary_packages() {
 		[ -n "${TAG:-}" ] || die "$name: binary pkg.conf missing TAG"
 		[ -n "${VERIFY:-}" ] || die "$name: binary pkg.conf missing VERIFY"
 
-		if [ "${INCLUDE_PRERELEASE:-}" = "1" ]; then
+		if [ -n "${TAG_FILTER:-}" ]; then
+			latest="$(TAG_FILTER="$TAG_FILTER" gh release list --repo "$GITHUB" --limit 50 --json tagName | python3 -c 'import sys,json,re,os; d=json.load(sys.stdin); f=os.environ["TAG_FILTER"]; tags=[r["tagName"] for r in d if re.search(f, r["tagName"])]; print(tags[0] if tags else "")')"
+		elif [ "${INCLUDE_PRERELEASE:-}" = "1" ]; then
 			latest="$(gh release list --repo "$GITHUB" --limit 1 --json tagName --jq '.[0].tagName')"
 		else
 			latest="$(gh api "repos/${GITHUB}/releases/latest" --jq '.tag_name')"

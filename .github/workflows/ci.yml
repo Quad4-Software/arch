@@ -55,6 +55,10 @@ jobs:
             arch: x86_64
           - package: meshchatx-bin
             arch: x86_64
+          - package: meshchatx-beta-bin
+            arch: x86_64
+          - package: meshchatx-testing-bin
+            arch: x86_64
           - package: renbrowser-bin
             arch: x86_64
           - package: nullray-bin

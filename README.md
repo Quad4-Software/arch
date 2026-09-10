@@ -17,7 +17,7 @@ Then:
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S reticulum-go-bin meshchatx-bin renbrowser-bin nullray-bin ren-tui-bin ravenguard-git rns lxmf nomadnet
+sudo pacman -S reticulum-go-bin meshchatx-bin meshchatx-beta-bin meshchatx-testing-bin renbrowser-bin nullray-bin ren-tui-bin ravenguard-git rns lxmf nomadnet
 ```
 
 The first Server is [cdn.quad4.io](https://cdn.quad4.io). The second is a rolling GitHub Release named `pkg-$arch`.
@@ -50,6 +50,8 @@ The public key is also in the repo at [`keys/quad4.gpg`](keys/quad4.gpg).
 | `reticulum-go-bin` | Reticulum-Go, prebuilt GitHub release (`x86_64`, `aarch64`, `armv7h`) |
 | `reticulum-go-git` | Reticulum-Go built from `master` |
 | `meshchatx-bin` | MeshChatX AppImage (`x86_64`, `aarch64`) |
+| `meshchatx-beta-bin` | MeshChatX beta AppImage (`x86_64`, `aarch64`) |
+| `meshchatx-testing-bin` | MeshChatX testing/nightly AppImage (`x86_64`, `aarch64`) |
 | `meshchatx-git` | MeshChatX built from `master` |
 | `renbrowser-bin` | Ren Browser for Reticulum (`x86_64`, `aarch64`) |
 | `renbrowser-git` | Ren Browser built from `master` |
