@@ -1,6 +1,6 @@
 pkgbase = nullray-bin
 	pkgdesc = Lightweight coding agent with a custom TUI
-	pkgver = 0.3.0
+	pkgver = 0.3.1
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/nullray
 	install = nullray-bin.install
@@ -11,11 +11,11 @@ pkgbase = nullray-bin
 	conflicts = nullray-git
 	replaces = nullray
 	options = !debug
-	source = https://github.com/Quad4-Software/nullray/archive/refs/tags/v0.3.0.tar.gz
-	sha256sums = c2e39da3586990f579c7c0faa8ef558e7b95de4f81845b283ca758df06d17b49
-	source_x86_64 = nullray_0.3.0_linux_amd64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v0.3.0/nullray_0.3.0_linux_amd64.tar.gz
-	sha256sums_x86_64 = db2cbfce4c0739e5592cebfbbfc69fc6587da0b36f0ebac350ce2759dd909725
-	source_aarch64 = nullray_0.3.0_linux_arm64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v0.3.0/nullray_0.3.0_linux_arm64.tar.gz
-	sha256sums_aarch64 = 8271821613e1f0a81924444cdd1acd99aa0c9c3f32f75e819da67cac2d620a5a
+	source = https://github.com/Quad4-Software/nullray/archive/refs/tags/v0.3.1.tar.gz
+	sha256sums = fdb901ed870a9b4b9c22f8a8c2aac26622e928cff931eabbc4b79d432d01514e
+	source_x86_64 = nullray_0.3.1_linux_amd64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v0.3.1/nullray_0.3.1_linux_amd64.tar.gz
+	sha256sums_x86_64 = 9867d45ffde93c123363d107efa2025a9af0f4ae9e4a225901b80e3ea07c5ca6
+	source_aarch64 = nullray_0.3.1_linux_arm64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v0.3.1/nullray_0.3.1_linux_arm64.tar.gz
+	sha256sums_aarch64 = fdc8ff9109c020494c7caa52b84773eead722858221407897cb0e2f23bab9a90
 
 pkgname = nullray-bin
