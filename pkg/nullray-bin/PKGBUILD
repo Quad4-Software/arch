@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=nullray-bin
-pkgver=0.3.0
+pkgver=0.4.0
 pkgrel=1
 pkgdesc='Lightweight coding agent with a custom TUI'
 arch=('x86_64' 'aarch64')
@@ -15,9 +15,9 @@ source=("https://github.com/Quad4-Software/nullray/archive/refs/tags/v${pkgver}.
 source_x86_64=("nullray_${pkgver}_linux_amd64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v${pkgver}/nullray_${pkgver}_linux_amd64.tar.gz")
 source_aarch64=("nullray_${pkgver}_linux_arm64.tar.gz::https://github.com/Quad4-Software/nullray/releases/download/v${pkgver}/nullray_${pkgver}_linux_arm64.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums=('c2e39da3586990f579c7c0faa8ef558e7b95de4f81845b283ca758df06d17b49')
-sha256sums_x86_64=('db2cbfce4c0739e5592cebfbbfc69fc6587da0b36f0ebac350ce2759dd909725')
-sha256sums_aarch64=('8271821613e1f0a81924444cdd1acd99aa0c9c3f32f75e819da67cac2d620a5a')
+sha256sums=('dd4087d64c44eaa2d0faafbfdae4a5449019700a0d223d993c15d365826d47ac')
+sha256sums_x86_64=('d31c88f902e9b2882c7bf06a61a793507ad25c14c19061cf1012180613f27ed7')
+sha256sums_aarch64=('6a9299a5350244485d386531d91eeb03d7a551264a3e586787770d93a963d5cc')
 # AUTO-SUMS-END
 
 package() {
