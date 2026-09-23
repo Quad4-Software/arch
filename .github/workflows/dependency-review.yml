@@ -13,7 +13,7 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: read # read the PR dependency diff
 
 jobs:
   dependency-review:
