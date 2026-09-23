@@ -21,14 +21,16 @@ concurrency:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   deploy:
     name: Deploy site
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read # checkout
+      pages: write # deploy the Pages artifact
+      id-token: write # OIDC token for the Pages deployment
     environment:
       name: github-pages
       url: https://arch.quad4.io
