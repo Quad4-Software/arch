@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=nomadnet
-pkgver=1.4.3
+pkgver=1.4.4
 pkgrel=1
 pkgdesc='Off-grid encrypted messaging client for Reticulum'
 arch=('any')
@@ -10,17 +10,17 @@ depends=('python' 'rns' 'lxmf' 'python-urwid' 'python-qrcode')
 makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
 options=('!strip')
 install=nomadnet.install
-source=("https://files.pythonhosted.org/packages/42/af/4391df610ed2c66841a8b0e1c090b9380483cc344ac98345d97ac761ae2d/nomadnet-1.4.3.tar.gz")
+source=("https://files.pythonhosted.org/packages/17/da/80092a61ec75ab5b8be3c32ec174789d0f580b954a554509571e3ac70def/nomadnet-1.4.4.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums=('c256bb5ef88dfa3de45b6fa02a2af2e0e313b7b0c34c9c510395f0418976299d')
+sha256sums=('7fd433b890755b3187bc440d502f6fd50ec9b59bbf655283dff44d4274cf1b35')
 # AUTO-SUMS-END
 
 build() {
-	cd "$srcdir/nomadnet-1.4.3"
+	cd "$srcdir/nomadnet-1.4.4"
 	python -m build --wheel --no-isolation
 }
 
 package() {
-	cd "$srcdir/nomadnet-1.4.3"
+	cd "$srcdir/nomadnet-1.4.4"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 }

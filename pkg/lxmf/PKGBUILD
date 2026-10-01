@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=lxmf
-pkgver=1.1.1
+pkgver=1.2.0
 pkgrel=1
 pkgdesc='Lightweight Extensible Message Format for Reticulum'
 arch=('any')
@@ -10,17 +10,17 @@ depends=('python' 'rns')
 makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
 options=('!strip')
 install=lxmf.install
-source=("https://files.pythonhosted.org/packages/e4/f6/0b705d49d51a9c55af2f868e827750af2c02b54fe30320c1a7cd21626f2d/lxmf-1.1.1.tar.gz")
+source=("https://files.pythonhosted.org/packages/15/e0/4e1efc0f20abd41a9ea2c01a5f1870b452f85c7cc710f74f45dd979d520b/lxmf-1.2.0.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums=('f2f7ea17d793fcc32cab826e81e8e9824404d025d1fc71b143be3242d45e6a5e')
+sha256sums=('f14243283b90ad06356071d90394357640924201f9c992dcdfecbc23614fb309')
 # AUTO-SUMS-END
 
 build() {
-	cd "$srcdir/lxmf-1.1.1"
+	cd "$srcdir/lxmf-1.2.0"
 	python -m build --wheel --no-isolation
 }
 
 package() {
-	cd "$srcdir/lxmf-1.1.1"
+	cd "$srcdir/lxmf-1.2.0"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 }

@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=golxmd-bin
-pkgver=2026.09.06.de8b005
+pkgver=2026.09.27.8abaa51
 pkgrel=1
 pkgdesc='Go LXMF daemon from reticulum-go-protocols'
 arch=('x86_64' 'aarch64' 'armv7h')
@@ -11,14 +11,14 @@ conflicts=('golxmd-git')
 replaces=('golxmd')
 options=('!strip' '!debug')
 install=golxmd-bin.install
-_tag=preview-2026.09.06-de8b005
+_tag=preview-2026.09.27-8abaa51
 source_x86_64=("golxmd-linux-amd64-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/golxmd-linux-amd64")
 source_aarch64=("golxmd-linux-arm64-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/golxmd-linux-arm64")
 source_armv7h=("golxmd-linux-armv6-${pkgver}::https://github.com/Quad4-Software/reticulum-go-protocols/releases/download/${_tag}/golxmd-linux-armv6")
 # AUTO-SUMS-BEGIN
-sha256sums_x86_64=('335310c425d42ebfdf59b8668f08cff8201095f44d50eaee1388d173801de6c4')
-sha256sums_aarch64=('cc5a65d8ca7109df6d06dd3deb4ebcd158e6c85dc2d7e39d6a866957275cb5e4')
-sha256sums_armv7h=('d0b5a958a77b64eec079db1c6a75900c5d95057092d00cda0ff0be0d19b2ac08')
+sha256sums_x86_64=('be4ab9fe590d6d82e5c7fd8bc5c1fb23a77c5cb629fdfe8b612b4f41cbec45c5')
+sha256sums_aarch64=('808225dadff523876953a26dbf75abda917d4a7abc33f0aea34a048accf60e8c')
+sha256sums_armv7h=('443a31930287c202edfde2fcebb3b9c73d11b73b23e5afcab0613cbae861449e')
 # AUTO-SUMS-END
 
 package() {
