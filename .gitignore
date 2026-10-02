@@ -13,6 +13,8 @@ pkg/*/ReticulumMeshChatX-*
 pkg/*/*.AppImage
 *.tar.gz
 *.tar.zst
+*.tar.xz
+pkg/void-search-git/void-search/
 .SRCINFO.bak
 keys/quad4-private.asc
 __pycache__/

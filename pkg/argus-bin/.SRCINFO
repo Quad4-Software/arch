@@ -1,0 +1,19 @@
+pkgbase = argus-bin
+	pkgdesc = All-in-one security, OSINT and linting tool (prebuilt release binary)
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/argus
+	install = argus-bin.install
+	arch = x86_64
+	arch = aarch64
+	license = custom:QSL-1.0-0BSD
+	provides = argus
+	conflicts = argus-git
+	replaces = argus
+	options = !debug
+	source_x86_64 = argus-v0.2.0-x86_64-unknown-linux-musl.tar.gz::https://github.com/Quad4-Software/argus/releases/download/v0.2.0/argus-v0.2.0-x86_64-unknown-linux-musl.tar.gz
+	sha256sums_x86_64 = c23c9945b2b84a8117370c295fb251309adeeccb1e48a6c2c42767bb612ba008
+	source_aarch64 = argus-v0.2.0-aarch64-unknown-linux-gnu.tar.gz::https://github.com/Quad4-Software/argus/releases/download/v0.2.0/argus-v0.2.0-aarch64-unknown-linux-gnu.tar.gz
+	sha256sums_aarch64 = 10cd808d8638cb75411fc2e0e1ae345fbc9163ee5f98cd12944b3824b32ab509
+
+pkgname = argus-bin

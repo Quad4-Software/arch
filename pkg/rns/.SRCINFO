@@ -1,6 +1,6 @@
 pkgbase = rns
 	pkgdesc = Reticulum Network Stack (Python)
-	pkgver = 1.5.5
+	pkgver = 1.5.6
 	pkgrel = 1
 	url = https://reticulum.network/
 	install = rns.install
@@ -14,7 +14,7 @@ pkgbase = rns
 	depends = python-cryptography
 	depends = python-pyserial
 	options = !strip
-	source = https://files.pythonhosted.org/packages/02/12/9e28be4983a2dc826c2dabc35786cc3ae4bd340973b622ce3c17a0df7451/rns-1.5.5.tar.gz
-	sha256sums = 94f2352c7462e2fcf485d5c770eb2b41e666b753906ac3ce0a94e8a0c489a460
+	source = https://files.pythonhosted.org/packages/63/b9/aca7c31217b322904b51daca52756d8a5b68291b4b2d0c081dbf8f0b4a09/rns-1.5.6.tar.gz
+	sha256sums = 57a2498a6581e994b088ad815f096b7c23ed321e3909b44fe1589f8b08506898
 
 pkgname = rns

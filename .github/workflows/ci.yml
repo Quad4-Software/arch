@@ -73,6 +73,12 @@ jobs:
             arch: x86_64
           - package: gorrcd-git
             arch: x86_64
+          - package: lyra-bin
+            arch: x86_64
+          - package: argus-bin
+            arch: x86_64
+          - package: void-search-git
+            arch: x86_64
           - package: rns
             arch: x86_64
           - package: lxmf

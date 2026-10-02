@@ -1,0 +1,43 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=lyra-bin
+pkgver=0.5.0
+pkgrel=1
+pkgdesc='Privacy-focused Firefox ESR fork by Quad4 (prebuilt release)'
+arch=('x86_64')
+url='https://github.com/Quad4-Software/Lyra'
+license=('MPL-2.0')
+depends=('alsa-lib' 'at-spi2-core' 'cairo' 'dbus-glib' 'ffmpeg' 'fontconfig' 'freetype2' 'gdk-pixbuf2' 'glib2' 'gtk3' 'hicolor-icon-theme' 'libx11' 'libxcb' 'libxcomposite' 'libxdamage' 'libxext' 'libxfixes' 'libxrandr' 'libxss' 'libxt' 'mime-types' 'nspr' 'nss' 'pango' 'ttf-font')
+optdepends=('hunspell-en_US: spell checking' 'libnotify: notification integration' 'libpulse: audio' 'speech-dispatcher: text to speech' 'xdg-desktop-portal: screensharing and file portals')
+provides=('lyra')
+conflicts=('lyra-git')
+replaces=('lyra')
+options=('!strip' '!debug' '!emptydirs')
+install=lyra-bin.install
+source=("https://github.com/Quad4-Software/Lyra/archive/refs/tags/v${pkgver}.tar.gz")
+source_x86_64=("lyra-${pkgver}-linux-x86_64.tar.xz::https://github.com/Quad4-Software/Lyra/releases/download/v${pkgver}/lyra-${pkgver}-linux-x86_64.tar.xz")
+# AUTO-SUMS-BEGIN
+sha256sums=('6aad911af99e2fd4a200362feb1637d768900f3b65698180cd3ad8a9323e3b02')
+sha256sums_x86_64=('bed2fba2786ded31377da0940d8c267c9e7279a51692e099ecfd4bd905d42086')
+# AUTO-SUMS-END
+
+package() {
+	local dist="lyra-${pkgver}-linux-x86_64"
+	local repo="Lyra-${pkgver}"
+
+	install -d "$pkgdir/usr/lib"
+	cp -a "$srcdir/$dist" "$pkgdir/usr/lib/lyra"
+
+	install -d "$pkgdir/usr/bin"
+	ln -s /usr/lib/lyra/lyra "$pkgdir/usr/bin/lyra"
+
+	install -Dm644 "$srcdir/$repo/overlay/linux/io.quad4.lyra.desktop" \
+		"$pkgdir/usr/share/applications/io.quad4.lyra.desktop"
+
+	local size
+	for size in 16 32 48 64 128; do
+		install -Dm644 "$pkgdir/usr/lib/lyra/browser/chrome/icons/default/default${size}.png" \
+			"$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/lyra.png"
+	done
+
+	install -Dm644 "$srcdir/$repo/LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

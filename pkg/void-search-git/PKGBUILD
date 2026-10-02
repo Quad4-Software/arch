@@ -1,0 +1,141 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=void-search-git
+pkgver=r45.93d2b31
+pkgrel=1
+pkgdesc='Void Search, SearXNG metasearch fork (built from git)'
+arch=('x86_64')
+url='https://github.com/Quad4-Software/void-search'
+license=('AGPL-3.0-or-later')
+depends=('python>=3.12' 'valkey')
+makedepends=('git' 'python' 'python-pip')
+provides=('void-search')
+conflicts=('void-search-bin' 'void-search')
+options=('!debug')
+install=void-search-git.install
+source=('git+https://github.com/Quad4-Software/void-search.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/void-search"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/void-search"
+
+	python -m venv "$srcdir/venv"
+	"$srcdir/venv/bin/pip" install --no-cache-dir --upgrade pip
+	"$srcdir/venv/bin/pip" install --no-cache-dir -r requirements.txt -r requirements-server.txt
+
+	# Freeze the git version so searx.version does not shell out at runtime.
+	cat >searx/version_frozen.py <<EOF
+VERSION_STRING = "${pkgver}"
+VERSION_TAG = "${pkgver}"
+DOCKER_TAG = "${pkgver}"
+GIT_URL = "https://github.com/Quad4-Software/void-search"
+GIT_BRANCH = "master"
+EOF
+
+	# Bytecode caches embed the build path; drop them.
+	find searx "$srcdir/venv" -type d -name __pycache__ -prune -exec rm -rf {} +
+	find "$srcdir/venv" -type f -name '*.pyc' -delete
+}
+
+package() {
+	cd "$srcdir/void-search"
+
+	install -d "$pkgdir/usr/lib/void-search"
+	cp -a searx "$pkgdir/usr/lib/void-search/searx"
+	cp -a "$srcdir/venv" "$pkgdir/usr/lib/void-search/.venv"
+	install -Dm755 container/entrypoint.sh "$pkgdir/usr/lib/void-search/entrypoint.sh"
+	install -Dm644 container/settings.template.yml "$pkgdir/usr/lib/void-search/settings.template.yml"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+
+	# The venv records the build path in entry-point shebangs, activate
+	# scripts, and pyvenv.cfg. Rewrite everything to the final location.
+	local f
+	find "$pkgdir/usr/lib/void-search/.venv/bin" -maxdepth 1 -type f -exec grep -l "$srcdir/venv" {} + |
+		while IFS= read -r f; do
+			sed -i "s|${srcdir}/venv|/usr/lib/void-search/.venv|g" "$f"
+		done
+	sed -i '/^command = /d' "$pkgdir/usr/lib/void-search/.venv/pyvenv.cfg"
+	rm -rf "$pkgdir/usr/lib/void-search/.venv/lib64"
+	rm -f "$pkgdir/usr/lib/void-search/.venv/bin/𝜋thon"
+
+	cat >"$srcdir/void-search.sh" <<'EOF'
+#!/bin/sh
+# Void Search launcher. Settings live in /etc/void-search/settings.yml.
+set -eu
+
+export __SEARXNG_CONFIG_PATH="${__SEARXNG_CONFIG_PATH:-/etc/void-search}"
+export __SEARXNG_DATA_PATH="${__SEARXNG_DATA_PATH:-/var/lib/void-search}"
+export PYTHONPATH="/usr/lib/void-search${PYTHONPATH:+:$PYTHONPATH}"
+
+: "${GRANIAN_INTERFACE:=wsgi}"
+: "${GRANIAN_HOST:=127.0.0.1}"
+: "${GRANIAN_PORT:=8080}"
+: "${GRANIAN_WORKERS:=4}"
+: "${GRANIAN_WEBSOCKETS:=false}"
+: "${GRANIAN_ACCESS_LOG:=false}"
+export GRANIAN_INTERFACE GRANIAN_HOST GRANIAN_PORT GRANIAN_WORKERS GRANIAN_WEBSOCKETS GRANIAN_ACCESS_LOG
+
+exec /usr/lib/void-search/entrypoint.sh "$@"
+EOF
+	install -Dm755 "$srcdir/void-search.sh" "$pkgdir/usr/bin/void-search"
+
+	cat >"$srcdir/void-search.service" <<'EOF'
+[Unit]
+Description=Void Search metasearch
+After=network-online.target valkey.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=void-search
+Group=void-search
+Environment=__SEARXNG_CONFIG_PATH=/etc/void-search
+Environment=__SEARXNG_DATA_PATH=/var/lib/void-search
+Environment=SEARXNG_SETTINGS_PATH=/etc/void-search/settings.yml
+Environment=PYTHONPATH=/usr/lib/void-search
+Environment=GRANIAN_INTERFACE=wsgi
+Environment=GRANIAN_HOST=127.0.0.1
+Environment=GRANIAN_PORT=8080
+Environment=GRANIAN_WORKERS=4
+Environment=GRANIAN_WEBSOCKETS=false
+Environment=GRANIAN_ACCESS_LOG=false
+Environment=GRANIAN_LOG_LEVEL=error
+Environment=GRANIAN_PROCESS_NAME=void
+ExecStart=/usr/lib/void-search/entrypoint.sh
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/etc/void-search /var/lib/void-search
+
+[Install]
+WantedBy=multi-user.target
+EOF
+	install -Dm644 "$srcdir/void-search.service" "$pkgdir/usr/lib/systemd/system/void-search.service"
+
+	printf '%s\n' 'u void-search - "Void Search metasearch" /var/lib/void-search /usr/bin/nologin' \
+		>"$srcdir/void-search.sysusers"
+	install -Dm644 "$srcdir/void-search.sysusers" "$pkgdir/usr/lib/sysusers.d/void-search.conf"
+
+	cat >"$srcdir/void-search.tmpfiles" <<'EOF'
+d /etc/void-search 0750 void-search void-search -
+d /var/lib/void-search 0750 void-search void-search -
+EOF
+	install -Dm644 "$srcdir/void-search.tmpfiles" "$pkgdir/usr/lib/tmpfiles.d/void-search.conf"
+}
