@@ -1,8 +1,9 @@
 pkgbase = lyra-bin
-	pkgdesc = Privacy-focused Firefox ESR fork by Quad4 (prebuilt release)
-	pkgver = 0.5.0
+	pkgdesc = Privacy-focused Firefox ESR fork (prebuilt release)
+	pkgver = 0.1.0
 	pkgrel = 1
-	url = https://github.com/Quad4-Software/Lyra
+	epoch = 1
+	url = https://github.com/lyrabrowserhq/lyra-browser
 	install = lyra-bin.install
 	arch = x86_64
 	license = MPL-2.0
@@ -42,9 +43,9 @@ pkgbase = lyra-bin
 	options = !strip
 	options = !debug
 	options = !emptydirs
-	source = https://github.com/Quad4-Software/Lyra/archive/refs/tags/v0.5.0.tar.gz
-	sha256sums = 6aad911af99e2fd4a200362feb1637d768900f3b65698180cd3ad8a9323e3b02
-	source_x86_64 = lyra-0.5.0-linux-x86_64.tar.xz::https://github.com/Quad4-Software/Lyra/releases/download/v0.5.0/lyra-0.5.0-linux-x86_64.tar.xz
-	sha256sums_x86_64 = bed2fba2786ded31377da0940d8c267c9e7279a51692e099ecfd4bd905d42086
+	source = https://github.com/lyrabrowserhq/lyra-browser/archive/refs/tags/v0.1.0.tar.gz
+	sha256sums = 4deef5ee24131d7f3f7981f06c3a03c7a570c9f4885a386e3512408baebed6cf
+	source_x86_64 = lyra-0.1.0-linux-x86_64.tar.xz::https://github.com/lyrabrowserhq/lyra-browser/releases/download/v0.1.0/lyra-0.1.0-linux-x86_64.tar.xz
+	sha256sums_x86_64 = 44815a74ef0c9cc0fd20ef1ccbd8f5083b0833f5e8ecb1714ed3b99a04bec161
 
 pkgname = lyra-bin

@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=meshchatx-bin
-pkgver=4.9.3
+pkgver=4.10.1
 pkgrel=1
 pkgdesc='All-in-one Reticulum client (prebuilt AppImage)'
 arch=('x86_64' 'aarch64')
@@ -17,9 +17,9 @@ source=("https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/v${pkgver
 source_x86_64=("ReticulumMeshChatX-v${pkgver}-linux-x86_64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v${pkgver}/ReticulumMeshChatX-v${pkgver}-linux-x86_64.AppImage")
 source_aarch64=("ReticulumMeshChatX-v${pkgver}-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/v${pkgver}/ReticulumMeshChatX-v${pkgver}-linux-arm64.AppImage")
 # AUTO-SUMS-BEGIN
-sha256sums=('ce3fd52ea3070623963b3c58de367daf1de3b61aae72fc22f6429a79be05ff55')
-sha256sums_x86_64=('2f3adbfb6ae97edb9828f4ceae0e4bf23254685d198bcd26ab2b34903af6778f')
-sha256sums_aarch64=('cf4faf66c9265996eb7c6f55631f04a945cdfb1f167b0ec13199d992a4593971')
+sha256sums=('c8e3654fe68c5e94792dc448c9a4c71236863ca7070cb7a8c9c17a79733055a7')
+sha256sums_x86_64=('2ea0f18ad426a9b1eaf91e435a442862c7d00ba849d1393a6d76bdf27bd50a1b')
+sha256sums_aarch64=('2ea61f0a6473b32514af77e1c82d322c39b78c37ab2cc26888af922de4fc9a53')
 # AUTO-SUMS-END
 
 package() {
