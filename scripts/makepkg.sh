@@ -131,8 +131,8 @@ build_one() {
 				makepkg -f --noconfirm --skippgpcheck --cleanbuild $sign_flag
 			fi
 		)
+		sanitize_pkg_filenames "$outdir"
 	fi
-	sanitize_pkg_filenames "$outdir"
 }
 
 if [ -n "$PKG_FILTER" ]; then

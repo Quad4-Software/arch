@@ -55,6 +55,13 @@ if [ -n "\${PACKAGER_GPG_PRIVATE_KEY:-}" ]; then
 fi
 # shellcheck disable=SC2086
 makepkg ${MAKEPKG_FLAGS}
+# Epoch versions put a colon in the package filename, which GitHub
+# Actions artifacts reject. The database carries the real version, so
+# pacman installs and upgrades work with the dot form.
+for f in /out/*:*.pkg.tar.zst*; do
+	[ -e "\$f" ] || continue
+	mv "\$f" "\$(printf '%s' "\$f" | tr ':' '.')"
+done
 INNER
 chown builder:builder /home/builder/run.sh
 chmod 755 /home/builder/run.sh
