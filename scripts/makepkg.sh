@@ -67,6 +67,16 @@ maybe_sign_makepkg() {
 	fi
 }
 
+sanitize_pkg_filenames() {
+	# Epoch versions put a colon in the package filename, which GitHub
+	# Actions artifacts reject. The database carries the real version, so
+	# pacman installs and upgrades work with the dot form.
+	for f in "$1"/*:*.pkg.tar.zst*; do
+		[ -e "$f" ] || continue
+		mv "$f" "$(printf '%s' "$f" | tr ':' '.')"
+	done
+}
+
 build_one() {
 	name="$1"
 	arch="$2"
@@ -122,6 +132,7 @@ build_one() {
 			fi
 		)
 	fi
+	sanitize_pkg_filenames "$outdir"
 }
 
 if [ -n "$PKG_FILTER" ]; then
