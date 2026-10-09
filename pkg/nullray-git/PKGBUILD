@@ -1,0 +1,38 @@
+# Maintainer: Quad4.io <ivan@quad4.io>
+pkgname=nullray-git
+pkgver=0.8.0.r21.g1b0b3cb
+pkgrel=1
+pkgdesc='Terminal coding agent in Odin, built from git'
+arch=('x86_64')
+url='https://github.com/Quad4-Software/nullray'
+license=('0BSD')
+makedepends=('git' 'odin')
+provides=('nullray')
+conflicts=('nullray-bin' 'nullray')
+replaces=('nullray-bin')
+options=('!debug')
+install=nullray-git.install
+source=('git+https://github.com/Quad4-Software/nullray.git#branch=master')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/nullray"
+	local d
+	d="$(git describe --long --tags --abbrev=7 2>/dev/null || true)"
+	if [ -n "$d" ]; then
+		printf '%s' "$d" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+	else
+		printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	cd "$srcdir/nullray"
+	make
+}
+
+package() {
+	cd "$srcdir/nullray"
+	make install DESTDIR="$pkgdir" PREFIX=/usr
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+}

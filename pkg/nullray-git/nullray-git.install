@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 post_install() {
-	printf '%s\n' 'nullray-bin is installed (nullray binary).'
+	printf '%s\n' 'nullray-git is installed (nullray from git).'
 }
 
 post_upgrade() {

@@ -1,6 +1,6 @@
 pkgbase = meshchatx-testing-bin
 	pkgdesc = All-in-one Reticulum client (prebuilt testing AppImage)
-	pkgver = 4.10.1.2026.10.05.5349547
+	pkgver = 4.10.2.2026.10.07.3892bd8
 	pkgrel = 1
 	url = https://github.com/Quad4-Software/MeshChatX
 	install = meshchatx-testing-bin.install
@@ -17,11 +17,11 @@ pkgbase = meshchatx-testing-bin
 	conflicts = meshchatx-beta-bin
 	options = !strip
 	options = !debug
-	source = https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/nightly-2026.10.05-5349547.tar.gz
-	sha256sums = 0ec3b914c2c1c2920d7591479d360ae46024ec6218c18094239146d8aec7cf38
-	source_x86_64 = ReticulumMeshChatX-v4.10.1-linux-x86_64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/nightly-2026.10.05-5349547/ReticulumMeshChatX-v4.10.1-linux-x86_64.AppImage
-	sha256sums_x86_64 = 1b099ab7b33b22dc3da92d7068084e5013082fa36e269a325a37464c4bd58549
-	source_aarch64 = ReticulumMeshChatX-v4.10.1-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/nightly-2026.10.05-5349547/ReticulumMeshChatX-v4.10.1-linux-arm64.AppImage
-	sha256sums_aarch64 = b06d7a7d8712b5f2a979a553cde8b8083990cd837d09baea7dd4fbd78cf33482
+	source = https://github.com/Quad4-Software/MeshChatX/archive/refs/tags/nightly-2026.10.07-3892bd8.tar.gz
+	sha256sums = 4750320c3d528567efd194474cef5af0b145eaa7a84f50cb74586cad66945fa2
+	source_x86_64 = ReticulumMeshChatX-v4.10.2-linux-x86_64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/nightly-2026.10.07-3892bd8/ReticulumMeshChatX-v4.10.2-linux-x86_64.AppImage
+	sha256sums_x86_64 = f75e53880b2425d6299569cdeb2661f1bd7b6260e0f6781688d89471979a50ed
+	source_aarch64 = ReticulumMeshChatX-v4.10.2-linux-arm64.AppImage::https://github.com/Quad4-Software/MeshChatX/releases/download/nightly-2026.10.07-3892bd8/ReticulumMeshChatX-v4.10.2-linux-arm64.AppImage
+	sha256sums_aarch64 = 5b95ea164200489d0b118c5785816d2ccaac44007db42ade8a7ee8b498d7244c
 
 pkgname = meshchatx-testing-bin

@@ -1,0 +1,19 @@
+pkgbase = nullray-git
+	pkgdesc = Terminal coding agent in Odin, built from git
+	pkgver = 0.8.0.r21.g1b0b3cb
+	pkgrel = 1
+	url = https://github.com/Quad4-Software/nullray
+	install = nullray-git.install
+	arch = x86_64
+	license = 0BSD
+	makedepends = git
+	makedepends = odin
+	provides = nullray
+	conflicts = nullray-bin
+	conflicts = nullray
+	replaces = nullray-bin
+	options = !debug
+	source = git+https://github.com/Quad4-Software/nullray.git#branch=master
+	sha256sums = SKIP
+
+pkgname = nullray-git

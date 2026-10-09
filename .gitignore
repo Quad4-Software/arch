@@ -15,6 +15,7 @@ pkg/*/*.AppImage
 *.tar.zst
 *.tar.xz
 pkg/void-search-git/void-search/
+pkg/nullray-git/nullray/
 .SRCINFO.bak
 keys/quad4-private.asc
 __pycache__/

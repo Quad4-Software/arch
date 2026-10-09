@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=argus-bin
-pkgver=0.2.0
+pkgver=0.3.1
 pkgrel=1
 pkgdesc='All-in-one security, OSINT and linting tool (prebuilt release binary)'
 arch=('x86_64' 'aarch64')
@@ -14,8 +14,8 @@ install=argus-bin.install
 source_x86_64=("argus-v${pkgver}-x86_64-unknown-linux-musl.tar.gz::https://github.com/Quad4-Software/argus/releases/download/v${pkgver}/argus-v${pkgver}-x86_64-unknown-linux-musl.tar.gz")
 source_aarch64=("argus-v${pkgver}-aarch64-unknown-linux-gnu.tar.gz::https://github.com/Quad4-Software/argus/releases/download/v${pkgver}/argus-v${pkgver}-aarch64-unknown-linux-gnu.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums_x86_64=('c23c9945b2b84a8117370c295fb251309adeeccb1e48a6c2c42767bb612ba008')
-sha256sums_aarch64=('10cd808d8638cb75411fc2e0e1ae345fbc9163ee5f98cd12944b3824b32ab509')
+sha256sums_x86_64=('a0ab460b4760c862e200d305e2e6e453e1351d858173131a2aa20b606645dd8e')
+sha256sums_aarch64=('0ac5b972095273241244ea6042398785df542c90e0bbc24b53e56af216681e07')
 # AUTO-SUMS-END
 
 package() {
