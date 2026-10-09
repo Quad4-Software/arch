@@ -9,6 +9,7 @@ pkgbase = meshchatx-git
 	license = 0BSD
 	license = MIT
 	makedepends = git
+	makedepends = go
 	makedepends = nodejs
 	makedepends = pnpm
 	makedepends = python
@@ -37,5 +38,9 @@ pkgbase = meshchatx-git
 	options = !debug
 	source = git+https://github.com/Quad4-Software/MeshChatX.git#branch=master
 	sha256sums = SKIP
+	source_x86_64 = tinygo-0.42.0-linux-amd64.tar.gz::https://github.com/tinygo-org/tinygo/releases/download/v0.42.0/tinygo0.42.0.linux-amd64.tar.gz
+	sha256sums_x86_64 = b87688fa2e19cee7d813cad7fd7dadb71dff3198e47125aba66ba4af5e490438
+	source_aarch64 = tinygo-0.42.0-linux-arm64.tar.gz::https://github.com/tinygo-org/tinygo/releases/download/v0.42.0/tinygo0.42.0.linux-arm64.tar.gz
+	sha256sums_aarch64 = f2f3f863e63728b87772e7306bd6030df6e6c89773a7082eb0122113cf9e453d
 
 pkgname = meshchatx-git
