@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=lyra-bin
-pkgver=0.1.1
+pkgver=0.1.2
 pkgrel=1
 epoch=1
 pkgdesc='Privacy-focused Firefox ESR fork (prebuilt release)'
@@ -17,8 +17,8 @@ install=lyra-bin.install
 source=("https://github.com/lyrabrowserhq/lyra-browser/archive/refs/tags/v${pkgver}.tar.gz")
 source_x86_64=("lyra-${pkgver}-linux-x86_64.tar.xz::https://github.com/lyrabrowserhq/lyra-browser/releases/download/v${pkgver}/lyra-${pkgver}-linux-x86_64.tar.xz")
 # AUTO-SUMS-BEGIN
-sha256sums=('9e48d97a0cdee9b8e9e1cb8a3e8d258274fd8adae8b53584391029dc76835c66')
-sha256sums_x86_64=('900c4701fc90d85310b2cb7ab6ba0f758bcecf21c5f629cc69b5b41aa91cf142')
+sha256sums=('4f14e111888186b30cf3e5d097efbebd439bf3e4c5a0c62d307b466293bf3841')
+sha256sums_x86_64=('ad579f2da6a09e75995e559a3a6ebc76b0c0a042dbbf5b1dd549ecc8958ca0b5')
 # AUTO-SUMS-END
 
 package() {
