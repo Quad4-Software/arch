@@ -114,8 +114,6 @@ jobs:
             arch: aarch64
           - package: golxmd-git
             arch: armv7h
-          - package: lyra-bin
-            arch: x86_64
           - package: argus-bin
             arch: x86_64
           - package: argus-bin
