@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=renbrowser-bin
-pkgver=0.4.0
+pkgver=0.5.1
 pkgrel=1
 pkgdesc='Modern browser for the Reticulum Network (Reticulum-Go)'
 arch=('x86_64' 'aarch64')
@@ -15,9 +15,9 @@ source=("https://github.com/Quad4-Software/Ren-Browser/archive/refs/tags/v${pkgv
 source_x86_64=("renbrowser-linux-amd64-${pkgver}::https://github.com/Quad4-Software/Ren-Browser/releases/download/v${pkgver}/renbrowser-linux-amd64")
 source_aarch64=("renbrowser-linux-arm64-${pkgver}::https://github.com/Quad4-Software/Ren-Browser/releases/download/v${pkgver}/renbrowser-linux-arm64")
 # AUTO-SUMS-BEGIN
-sha256sums=('6d7670473afd55de47c1a0d8f1f01fb161e4df8b0aed4b8e3b6b798d386a3dd6')
-sha256sums_x86_64=('c3657a6b783ffaf537ec8b70d78c5495b8fc6955c5443105f265990840945a7f')
-sha256sums_aarch64=('c76dca32025f6ba7e09644f6e859b5022e69f60164e9997e317a12af11c79f61')
+sha256sums=('c929c9fbeb10648205b760030b3ad9063c0d787913aacbd836237e7c49baf5c6')
+sha256sums_x86_64=('03a1c4629d497680b19ba4f5dfff5782f3ca5c5f711b1d9b40526e5266d0e53b')
+sha256sums_aarch64=('7ee85dcc3b8d59dc1d8871decb7132cb2f9a2f4cb37d3242b5df79a9902fc62a')
 # AUTO-SUMS-END
 
 package() {
