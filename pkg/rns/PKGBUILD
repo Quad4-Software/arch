@@ -1,6 +1,6 @@
 # Maintainer: Quad4.io <ivan@quad4.io>
 pkgname=rns
-pkgver=1.6.0
+pkgver=1.6.1
 pkgrel=1
 pkgdesc='Reticulum Network Stack (Python)'
 arch=('any')
@@ -10,17 +10,17 @@ depends=('python' 'python-cryptography' 'python-pyserial')
 makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
 options=('!strip')
 install=rns.install
-source=("https://files.pythonhosted.org/packages/d0/21/c7d27dba5ff43a24d806678497c7f85273ccd23cd43cc9fc9cefb2ab3b30/rns-1.6.0.tar.gz")
+source=("https://files.pythonhosted.org/packages/9f/49/6e12a00bd534de00a4a41dd988b0a8115eef2bd49dc3f2e613371a252f1c/rns-1.6.1.tar.gz")
 # AUTO-SUMS-BEGIN
-sha256sums=('aa99d550dacd0c895d81cac6d0740fbd8e89bdb3d452c555a51ef2305a6e5e4d')
+sha256sums=('7f07563a8b87dd750a5f2f310f837e42ffbeb5818469b22956fe2c60c70efb00')
 # AUTO-SUMS-END
 
 build() {
-	cd "$srcdir/rns-1.6.0"
+	cd "$srcdir/rns-1.6.1"
 	python -m build --wheel --no-isolation
 }
 
 package() {
-	cd "$srcdir/rns-1.6.0"
+	cd "$srcdir/rns-1.6.1"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 }

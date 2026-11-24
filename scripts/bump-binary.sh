@@ -57,6 +57,13 @@ latest-yml:*)
 	APPVER="$(sed -n 's/^version: *//p' "$WORKDIR/latest-yml")"
 	[ -n "$APPVER" ] || die "$NAME: could not parse version from ${file}"
 	;;
+release-json:*)
+	file="${VERSION_FROM#release-json:}"
+	file="$(printf '%s' "$file" | sed "s/@TAG@/${TAG}/g")"
+	download "${base}/${file}" "$WORKDIR/release-json"
+	APPVER="$(sed -n 's/.*"name": *"[^"]*v\([0-9][0-9.]*\)-[^"]*".*/\1/p' "$WORKDIR/release-json" | head -n 1)"
+	[ -n "$APPVER" ] || die "$NAME: could not parse version from ${file}"
+	;;
 *)
 	die "$NAME: unknown VERSION_FROM=${VERSION_FROM}"
 	;;

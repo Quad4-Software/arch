@@ -1,6 +1,6 @@
 pkgbase = nomadnet
 	pkgdesc = Off-grid encrypted messaging client for Reticulum
-	pkgver = 1.5.0
+	pkgver = 1.5.1
 	pkgrel = 1
 	url = https://github.com/markqvist/nomadnet
 	install = nomadnet.install
@@ -16,7 +16,7 @@ pkgbase = nomadnet
 	depends = python-urwid
 	depends = python-qrcode
 	options = !strip
-	source = https://files.pythonhosted.org/packages/a3/56/280fb8eb658d2d7aacd88e95f8ec6f9f4fa720926b8484fe4fb25a0018a3/nomadnet-1.5.0.tar.gz
-	sha256sums = 4c064387199d9cd32b62c7d83ce770dfb6fe24d4092ed65758d0f6b3ef58b9bf
+	source = https://files.pythonhosted.org/packages/64/6d/d60ec43dabba7bda681e49ad76ac133b5ccb2b2588581b9486d1672e287a/nomadnet-1.5.1.tar.gz
+	sha256sums = fc340de0f14b313ebfe81f07ac1c836a84077766308b73f2df358134b71deed6
 
 pkgname = nomadnet
