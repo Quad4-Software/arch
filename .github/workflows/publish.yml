@@ -86,10 +86,6 @@ jobs:
             arch: x86_64
           - package: ren-tui-bin
             arch: aarch64
-          - package: ravenguard-git
-            arch: x86_64
-          - package: ravenguard-git
-            arch: aarch64
           - package: gorrcd-bin
             arch: x86_64
           - package: gorrcd-bin
