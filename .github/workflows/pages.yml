@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read # checkout
+      actions: read # poll artifact visibility before deploy
       pages: write # deploy the Pages artifact
       id-token: write # OIDC token for the Pages deployment
     environment:
@@ -63,6 +64,24 @@ jobs:
         with:
           path: public
           include-hidden-files: true
+
+      # deploy-pages reads the artifact list once; the upload can still be
+      # propagating, so wait until the API sees it.
+      - name: Wait for Pages artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          for _ in $(seq 1 24); do
+            count="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" --jq '.total_count')"
+            if [ "$count" -gt 0 ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "github-pages artifact not visible after 2 minutes" >&2
+          exit 1
 
       - name: Deploy Pages
         id: deploy
