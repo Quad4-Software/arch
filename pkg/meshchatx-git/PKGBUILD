@@ -6,8 +6,8 @@ pkgdesc='All-in-one Reticulum client, built from git'
 arch=('x86_64' 'aarch64')
 url='https://github.com/Quad4-Software/MeshChatX'
 license=('0BSD' 'MIT')
-depends=('opus' 'opusfile' 'portaudio' 'espeak-ng' 'nss' 'gtk3' 'libnotify' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'libsecret' 'alsa-lib')
-makedepends=('git' 'go' 'nodejs' 'pnpm' 'python' 'python-pip' 'python-setuptools' 'python-wheel')
+depends=('gtk4' 'webkitgtk-6.0' 'libsoup3' 'gst-plugins-base' 'gst-plugins-good' 'xdg-utils')
+makedepends=('git' 'go' 'nodejs' 'pnpm' 'python' 'python-pip' 'python-setuptools' 'python-wheel' 'go-task' 'gtk4' 'webkitgtk-6.0' 'libsoup3' 'gst-plugins-base')
 optdepends=('noto-fonts-emoji: color emoji in the UI')
 provides=('meshchatx' 'reticulum-meshchatx')
 conflicts=('meshchatx-bin' 'meshchatx')
@@ -56,44 +56,48 @@ build() {
 	# visualiser-wasm is built with TinyGo. Arch's tinygo (0.41.1) rejects
 	# the Go 1.27 toolchain, so use the pinned upstream release.
 	export TINYGO="$srcdir/tinygo/bin/tinygo"
-	local eb_arch unpacked
-
-	pnpm run electron-postinstall
-	pnpm run build
+	local arch_seg goarch
 	case "$CARCH" in
 	x86_64)
-		eb_arch=--x64
-		unpacked=dist/linux-unpacked
+		arch_seg=x64
+		goarch=amd64
 		;;
 	aarch64)
-		eb_arch=--arm64
-		unpacked=dist/linux-arm64-unpacked
+		arch_seg=arm64
+		goarch=arm64
 		;;
 	*)
 		echo "unsupported CARCH: $CARCH" >&2
 		return 1
 		;;
 	esac
-	pnpm exec electron-builder --linux --dir "$eb_arch"
-	[ -d "$unpacked" ]
+
+	PLATFORM=linux ARCH="$arch_seg" pnpm run build
+
+	# Wails3 CLI for the desktop shell, same pin as upstream CI.
+	if ! command -v wails3 >/dev/null 2>&1; then
+		go install github.com/wailsapp/wails/v3/cmd/wails3@v3.1.0
+	fi
+	export PATH="$(go env GOPATH)/bin:$PATH"
+
+	cd desktop
+	# Arch's go-task package ships the binary as go-task, not task.
+	go-task linux:build PRODUCTION=true ARCH="$goarch"
+	[ -x bin/meshchatx-desktop ]
+	[ -f bin/backend/ReticulumMeshChatX ]
 }
 
 package() {
 	cd "$srcdir/MeshChatX"
-	local unpacked
-	case "$CARCH" in
-	x86_64) unpacked=dist/linux-unpacked ;;
-	aarch64) unpacked=dist/linux-arm64-unpacked ;;
-	*)
-		echo "unsupported CARCH: $CARCH" >&2
-		return 1
-		;;
-	esac
 
-	install -d "$pkgdir/usr/lib/meshchatx"
-	cp -a "$unpacked"/. "$pkgdir/usr/lib/meshchatx/"
+	# Wails shell plus the frozen Python backend. The shell finds the
+	# backend at <self>/backend/ReticulumMeshChatX (desktop/internal/paths).
+	install -d "$pkgdir/usr/lib/meshchatx/backend"
+	install -m755 desktop/bin/meshchatx-desktop "$pkgdir/usr/lib/meshchatx/meshchatx"
+	cp -a desktop/bin/backend/. "$pkgdir/usr/lib/meshchatx/backend/"
+
 	install -d "$pkgdir/usr/bin"
-	ln -sfn /usr/lib/meshchatx/reticulum-meshchatx "$pkgdir/usr/bin/meshchatx"
+	ln -sfn /usr/lib/meshchatx/meshchatx "$pkgdir/usr/bin/meshchatx"
 	ln -sfn meshchatx "$pkgdir/usr/bin/reticulum-meshchatx"
 
 	install -Dm644 logo/logo.png "$pkgdir/usr/share/icons/hicolor/512x512/apps/meshchatx.png"
@@ -107,7 +111,8 @@ Icon=meshchatx
 Terminal=false
 Type=Application
 Categories=Network;
-StartupWMClass=reticulum-meshchatx
+MimeType=x-scheme-handler/lxmf;x-scheme-handler/rns;
+StartupWMClass=meshchatx-desktop
 EOF
 	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
 }
