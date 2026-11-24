@@ -43,7 +43,9 @@ prepare() {
 	. "$venv/bin/activate"
 	pip install --upgrade pip setuptools wheel "uv==0.11.15"
 	uv lock --check
-	uv sync --group dev --active
+	# Pin the venv interpreter: uv otherwise grabs the newest managed
+	# CPython (3.15.0b1), where the locked pyyaml sdist build segfaults.
+	uv sync --group dev --active --python "$venv/bin/python"
 	python scripts/patch_lxst_pyogg_ogg_ctypes.py
 }
 
